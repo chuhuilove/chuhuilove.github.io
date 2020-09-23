@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+
+<script type="text/javascript" color="262,46,104" opacity="0" zindex="1" count="500" src="https://cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+ <script>
+   (function(){
+          if(''){
+              if (prompt('请输入文章密码,默认为123456,这个弹窗不好,需要改一改') !== ''){
+                  alert('密码错误！');
+                  history.back();
+              }
+          }
+      })();
+  </script>
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="DataBase,Math,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="数据库技术数学基础--关系代数">
+<meta name="keywords" content="DataBase,Math">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关系代数基础">
+<meta property="og:url" content="http://yoursite.com/2020/09/23/Math/RelationalAlgebraBasic/index.html">
+<meta property="og:site_name" content="cyzi&#39;s blog">
+<meta property="og:description" content="数据库技术数学基础--关系代数">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-09-23T12:26:29.314Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关系代数基础">
+<meta name="twitter:description" content="数据库技术数学基础--关系代数">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/09/23/Math/RelationalAlgebraBasic/">
+
+
+
+
+
+  <title>关系代数基础 | cyzi's blog</title>
+  
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '',
+      xfbml      : true,
+      version    : 'v2.10'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/zh_Hans/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta custom-logo">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">cyzi's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">1+1=2</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/23/Math/RelationalAlgebraBasic/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="纯阳子">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/kejipigu.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="cyzi's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">关系代数基础</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-23T09:43:02+08:00">
+                2020-09-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Math/" itemprop="url" rel="index">
+                    <span itemprop="name">Math</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  数据库技术数学基础--关系代数
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="关系代数运算符"><a href="#关系代数运算符" class="headerlink" title="关系代数运算符"></a>关系代数运算符</h2><table>
+    <tr>
+        <th>类别</th>
+        <th>运算符</th>
+        <th>含义</th>
+    </tr>
+    <tr>
+        <td rowspan="4">集合运算符</td>
+        <td>$\cup$</td>
+        <td>并</td>
+    </tr>
+    <tr>
+        <td>$-$</td>
+        <td>差</td>
+    </tr>
+    <tr>
+        <td>$\cap$</td>
+        <td>交</td>
+    </tr>
+    <tr>
+        <td>$\times$</td>
+        <td>笛卡尔积</td>
+    </tr>
+    <tr>
+        <td rowspan="6">比较运算符</td>
+        <td>$\gt$</td>
+        <td>大于</td>
+    </tr>
+    <tr>
+        <td>$\ge$</td>
+        <td>大于等于</td>
+    </tr>
+    <tr>
+        <td>$\lt$</td>
+        <td>小于</td>
+    </tr>
+    <tr>
+        <td>$\le$</td>
+        <td>小于等于</td>
+    </tr>
+    <tr>
+        <td>$=$</td>
+        <td>等于</td>
+    </tr>
+    <tr>
+        <td>$\ne$</td>
+        <td>不等于</td>
+    </tr>
+    <tr>
+        <td rowspan="4">专门的关系运算符</td>
+        <td>$\sigma$</td>
+        <td>选择</td>
+    </tr>
+    <tr>
+        <td>$\pi$</td>
+        <td>投影</td>
+    </tr>
+    <tr>
+        <td>$\bowtie$</td>
+        <td>连接</td>
+    </tr>
+    <tr>
+        <td>$\div$</td>
+        <td>除</td>
+    </tr>
+    <tr>
+        <td rowspan="3">逻辑运算符</td>
+        <td>$\lnot$</td>
+        <td>非</td>
+    </tr>
+    <tr>
+        <td>$\land$</td>
+        <td>与</td>
+    </tr>
+    <tr>
+        <td>$\lor$</td>
+        <td>或</td>
+    </tr>
+</table>
+
+<h2 id="五种基本的关系代数运算"><a href="#五种基本的关系代数运算" class="headerlink" title="五种基本的关系代数运算"></a>五种基本的关系代数运算</h2><p>五种基本的关系运算包括并,差,笛卡尔积,投影和选择,其他的运算可以通过基本的关系运算导出.</p>
+<h3 id="1-并-Union"><a href="#1-并-Union" class="headerlink" title="1. 并(Union)"></a>1. 并(Union)</h3><p>关系$R$与$S$具有相同的关系模式,即$R$与$S$的元数相同(结构相同).关系$R$与$S$的并<strong style="color:red">是由属于$R$或$S$的元组构成的集合</strong>,记作$R\cup S$,其形式定义如下:</p>
+<script type="math/tex; mode=display">
+R\cup S = \{t|t \in R \vee t \in S\}</script><p>式中$t$为元组变量</p>
+<h3 id="2-差-Difference"><a href="#2-差-Difference" class="headerlink" title="2. 差(Difference)"></a>2. 差(Difference)</h3><p>关系$R$与$S$具有相同的关系模式,关系$R$与$S$的差<strong style="color:red">是由属于$R$但不属于$S$的元组构成的集合</strong>,记作$R-S$,其形式定义如下:</p>
+<script type="math/tex; mode=display">
+R-S = \{t|t \in R \wedge t \notin S\}</script><h3 id="3-广义笛卡尔积-Extended-Cartesian-Product"><a href="#3-广义笛卡尔积-Extended-Cartesian-Product" class="headerlink" title="3. 广义笛卡尔积(Extended Cartesian Product)"></a>3. 广义笛卡尔积(Extended Cartesian Product)</h3><p>两个元数分别为n目和m目的关系R和S的广义笛卡尔积是一个(n+m)列的元组的集合</p>
+<h3 id="4-投影-Projection"><a href="#4-投影-Projection" class="headerlink" title="4. 投影(Projection)"></a>4. 投影(Projection)</h3><p>投影运算的从关系的垂直方向进行运算,<strong style="color:red">在关系$R$中选出若干属性列$A$组成新的关系</strong>,记作$\pi_{A}(R)$,其形式定义如下:</p>
+<script type="math/tex; mode=display">
+\pi_{A}(R) = \{t[A]|t \in R \}</script><h3 id="5-选择-Selection"><a href="#5-选择-Selection" class="headerlink" title="5. 选择(Selection)"></a>5. 选择(Selection)</h3><p>选择运算是从关系的水平方向进行运算,是<strong style="color:red">从关系$R$中选择满足给定条件的诸元组</strong>,记作$\sigma_{F}(R)$,其形式定义如下:</p>
+<script type="math/tex; mode=display">
+\sigma_{F}(R)=\{t|t \in R \land F(t)=True \}</script><p>其中,$F$中的运算对象是属性名(或列的序号)或常数,运算符,算术比较符($\gt$,$\ge$,$\lt$,$\le$,$\ne$)和逻辑运算符($\lnot$,$\land$,$\lor$).<br>例如,$\sigma_{2 \le 5}(R)$表示选取$R$关系中第2个属性值小于等于第5个属性值的元组;$\sigma_{3 \ge “5” }(R)$表示选取$R$关系中第3个属性值大于等于5的元组.</p>
+<h2 id="扩展的关系代数运算"><a href="#扩展的关系代数运算" class="headerlink" title="扩展的关系代数运算"></a>扩展的关系代数运算</h2><h3 id="1-交-Intersection"><a href="#1-交-Intersection" class="headerlink" title="1. 交(Intersection)"></a>1. 交(Intersection)</h3><p>关系$R$与$S$具有相同的关系模式,关系$R$与$S$的交<strong style="color:red">是由属于$R$同时又属于$S$的元组构成的集合</strong>,记作$R\cap S$,其形式定义如下:</p>
+<script type="math/tex; mode=display">
+R \cap S = \{t|t \in R \land t \in S \}</script><p>显然,$R \cap S = R-(R-S)$,或者$R \cap S = S-(S-R)$</p>
+<h3 id="5-外连接"><a href="#5-外连接" class="headerlink" title="5. 外连接"></a>5. 外连接</h3>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/DataBase/" rel="tag"># DataBase</a>
+          
+            <a href="/tags/Math/" rel="tag"># Math</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/22/Technology/MultiDataSource/" rel="next" title="多数据源配置方案">
+                <i class="fa fa-chevron-left"></i> 多数据源配置方案
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/kejipigu.jpg" alt="纯阳子">
+            
+              <p class="site-author-name" itemprop="name">纯阳子</p>
+              <p class="site-description motion-element" itemprop="description">天还是很蓝的</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/chuhuilove" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-globe"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lovehui131125@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+  <script src="//cdn.bootcss.com/blueimp-md5/1.1.0/js/md5.min.js"></script>
+  <script>
+      var gitalk = new Gitalk({
+        clientID: '85ae836f21b451e3ae92',
+        clientSecret: 'dec7bfafa8aa5aaf17c7d8203a292cefe0cb86bd',
+        repo: 'BlogComments',
+        owner: 'chuhuilove',
+        admin: 'chuhuilove',
+        id: md5(location.pathname),
+        distractionFreeMode: 'true'
+      });
+      var div = document.createElement('div');
+      div.setAttribute("id", "gitalk_comments");
+      div.setAttribute("class", "post-nav");
+      var bro = document.getElementById('posts').getElementsByTagName('article');
+      bro = bro[0].getElementsByClassName('post-block');
+      bro = bro[0].getElementsByTagName('footer');
+      bro = bro[0];
+      bro.appendChild(div);
+      gitalk.render('gitalk_comments');
+  </script>
+
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#关系代数运算符"><span class="nav-number">1.</span> <span class="nav-text">关系代数运算符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五种基本的关系代数运算"><span class="nav-number">2.</span> <span class="nav-text">五种基本的关系代数运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-并-Union"><span class="nav-number">2.1.</span> <span class="nav-text">1. 并(Union)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-差-Difference"><span class="nav-number">2.2.</span> <span class="nav-text">2. 差(Difference)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-广义笛卡尔积-Extended-Cartesian-Product"><span class="nav-number">2.3.</span> <span class="nav-text">3. 广义笛卡尔积(Extended Cartesian Product)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-投影-Projection"><span class="nav-number">2.4.</span> <span class="nav-text">4. 投影(Projection)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-选择-Selection"><span class="nav-number">2.5.</span> <span class="nav-text">5. 选择(Selection)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展的关系代数运算"><span class="nav-number">3.</span> <span class="nav-text">扩展的关系代数运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-交-Intersection"><span class="nav-number">3.1.</span> <span class="nav-text">1. 交(Intersection)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-外连接"><span class="nav-number">3.2.</span> <span class="nav-text">5. 外连接</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2019 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">纯阳子</span>
+
+  
+</div>
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+-->
+
+
+<script>
+      var now = new Date();
+      function createtime() {
+          var grt= new Date("03/12/2019 12:00:00");//此处修改你的建站时间或者网站上线时间
+          now.setTime(now.getTime()+250);
+          days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days);
+          hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours);
+          if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+          mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;}
+          seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+          snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;}
+          document.getElementById("timeDate").innerHTML = "本站已安全运行 "+dnum+" 天 ";
+          document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒";
+      }
+  setInterval("createtime()",250);
+ </script>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
+
+
