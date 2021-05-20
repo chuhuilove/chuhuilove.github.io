@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+
+<script type="text/javascript" color="262,46,104" opacity="0" zindex="1" count="500" src="https://cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+ <script>
+   (function(){
+          if(''){
+              if (prompt('请输入文章密码,默认为123456,这个弹窗不好,需要改一改') !== ''){
+                  alert('密码错误！');
+                  history.back();
+              }
+          }
+      })();
+  </script>
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="redis-cli, the Redis command line interface title: redis-cli, the Redis command line interfacedate: 2020-10-15 09:40:04categories: “Redis”tags:   - Redis description: “Learn how to master the Redis co">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cyzi&#39;s blog">
+<meta property="og:url" content="http://yoursite.com/2021/05/06/Redis/Topic/Administration/RedisCli/index.html">
+<meta property="og:site_name" content="cyzi&#39;s blog">
+<meta property="og:description" content="redis-cli, the Redis command line interface title: redis-cli, the Redis command line interfacedate: 2020-10-15 09:40:04categories: “Redis”tags:   - Redis description: “Learn how to master the Redis co">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2021-05-06T14:24:00.936Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="cyzi&#39;s blog">
+<meta name="twitter:description" content="redis-cli, the Redis command line interface title: redis-cli, the Redis command line interfacedate: 2020-10-15 09:40:04categories: “Redis”tags:   - Redis description: “Learn how to master the Redis co">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/05/06/Redis/Topic/Administration/RedisCli/">
+
+
+
+
+
+  <title> | cyzi's blog</title>
+  
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '',
+      xfbml      : true,
+      version    : 'v2.10'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/zh_Hans/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta custom-logo">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">cyzi's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">1+1=2</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/05/06/Redis/Topic/Administration/RedisCli/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="纯阳子">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/kejipigu.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="cyzi's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-06T22:24:00+08:00">
+                2021-05-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="redis-cli-the-Redis-command-line-interface"><a href="#redis-cli-the-Redis-command-line-interface" class="headerlink" title="redis-cli, the Redis command line interface"></a>redis-cli, the Redis command line interface</h1><hr>
+<p>title: redis-cli, the Redis command line interface<br>date: 2020-10-15 09:40:04<br>categories: “Redis”<br>tags: </p>
+<pre><code> - Redis
+</code></pre><h2 id="description-“Learn-how-to-master-the-Redis-command-line-interface-something-you’ll-be-using-a-lot-in-order-to-administer-troubleshoot-and-experiment-with-Redis-”"><a href="#description-“Learn-how-to-master-the-Redis-command-line-interface-something-you’ll-be-using-a-lot-in-order-to-administer-troubleshoot-and-experiment-with-Redis-”" class="headerlink" title="description: “Learn how to master the Redis command line interface, something you’ll be using a lot in order to administer, troubleshoot and experiment with Redis.”"></a>description: “Learn how to master the Redis command line interface, something you’ll be using a lot in order to administer, troubleshoot and experiment with Redis.”</h2><p><code>redis-cli</code> is the Redis command line interface, a simple program that allows<br>to send commands to Redis, and read the replies sent by the server, directly<br>from the terminal.</p>
+<p>It has two main modes: an interactive mode where there is a REPL (Read<br>Eval Print Loop) where the user types commands and get replies; and another<br>mode where the command is sent as arguments of <code>redis-cli</code>, executed, and<br>printed on the standard output.</p>
+<p>In interactive mode, <code>redis-cli</code> has basic line editing capabilities to provide<br>a good typing experience.</p>
+<p>However <code>redis-cli</code> is not just that. There are options you can use to launch<br>the program in order to put it into special modes, so that <code>redis-cli</code> can<br>definitely do more complex tasks, like simulate a slave and print the<br>replication stream it receives from the master, check the latency of a Redis<br>server and show statistics or even an ASCII-art spectrogram of latency<br>samples and frequencies, and many other things.</p>
+<p>This guide will cover the different aspects of <code>redis-cli</code>, starting from the<br>simplest and ending with the more advanced ones.</p>
+<p>If you are going to use Redis extensively, or if you already do, chances are<br>you happen to use <code>redis-cli</code> a lot. Spending some time to familiarize with<br>it is likely a very good idea, you’ll see that you’ll work more effectively<br>with Redis once you know all the tricks of its command line interface.</p>
+<h1 id="Command-line-usage"><a href="#Command-line-usage" class="headerlink" title="Command line usage"></a>Command line usage</h1><p>To just run a command and have its reply printed on the standard output is as<br>simple as typing the command to execute as separated arguments of <code>redis-cli</code>:</p>
+<pre><code>$ redis-cli incr mycounter
+(integer) 7
+</code></pre><p>The reply of the command is “7”. Since Redis replies are typed (they can be<br>strings, arrays, integers, NULL, errors and so forth), you see the type<br>of the reply between brackets. However that would be not exactly a great idea<br>when the output of <code>redis-cli</code> must be used as input of another command, or when<br>we want to redirect it into a file.</p>
+<p>Actually <code>redis-cli</code> only shows additional information which improves<br>readability for humans when it detects the standard output is a tty (a terminal<br>basically). Otherwise it will auto-enable the <em>raw output mode</em>, like in the<br>following example:</p>
+<pre><code>$ redis-cli incr mycounter &gt; /tmp/output.txt
+$ cat /tmp/output.txt
+8
+</code></pre><p>This time <code>(integer)</code> was omitted from the output since the CLI detected<br>the output was no longer written to the terminal. You can force raw output<br>even on the terminal with the <code>--raw</code> option:</p>
+<pre><code>$ redis-cli --raw incr mycounter
+9
+</code></pre><p>Similarly, you can force human readable output when writing to a file or in<br>pipe to other commands by using <code>--no-raw</code>.</p>
+<h2 id="Host-port-password-and-database"><a href="#Host-port-password-and-database" class="headerlink" title="Host, port, password and database"></a>Host, port, password and database</h2><p>By default <code>redis-cli</code> connects to the server at 127.0.0.1 port 6379.<br>As you can guess, you can easily change this using command line options.<br>To specify a different host name or an IP address, use <code>-h</code>. In order<br>to set a different port, use <code>-p</code>.</p>
+<pre><code>$ redis-cli -h redis15.localnet.org -p 6390 ping
+PONG
+</code></pre><p>If your instance is password protected, the <code>-a &lt;password&gt;</code> option will<br>preform authentication saving the need of explicitly using the <code>AUTH</code> command:</p>
+<pre><code>$ redis-cli -a myUnguessablePazzzzzword123 ping
+PONG
+</code></pre><p>Alternatively, it is possible to provide the password to <code>redis-cli</code> via the<br><code>REDISCLI_AUTH</code> environment variable.</p>
+<p>Finally, it’s possible to send a command that operates on a database number<br>other than the default number zero by using the <code>-n &lt;dbnum&gt;</code> option:</p>
+<pre><code>$ redis-cli flushall
+OK
+$ redis-cli -n 1 incr a
+(integer) 1
+$ redis-cli -n 1 incr a
+(integer) 2
+$ redis-cli -n 2 incr a
+(integer) 1
+</code></pre><p>Some or all of this information can also be provided by using the <code>-u &lt;uri&gt;</code><br>option and a valid URI:</p>
+<pre><code>$ redis-cli -u redis://p%40ssw0rd@redis-16379.hosted.com:16379/0 ping
+PONG
+</code></pre><h2 id="SSL-TLS"><a href="#SSL-TLS" class="headerlink" title="SSL/TLS"></a>SSL/TLS</h2><p>By default, <code>redis-cli</code> uses a plain TCP connection to connect to Redis.<br>You may enable SSL/TLS using the <code>--tls</code> option, along with <code>--cacert</code> or<br><code>--cacertdir</code> to configure a trusted root certificate bundle or directory.</p>
+<p>If the target server requires authentication using a client side certificate,<br>you can specify a certificate and a corresponding private key using <code>--cert</code> and<br><code>--key</code>.</p>
+<h2 id="Getting-input-from-other-programs"><a href="#Getting-input-from-other-programs" class="headerlink" title="Getting input from other programs"></a>Getting input from other programs</h2><p>There are two ways you can use <code>redis-cli</code> in order to get the input from other<br>commands (from the standard input, basically). One is to use as last argument<br>the payload we read from <em>stdin</em>. For example, in order to set a Redis key<br>to the content of the file <code>/etc/services</code> if my computer, I can use the <code>-x</code><br>option:</p>
+<pre><code>$ redis-cli -x set foo &lt; /etc/services
+OK
+$ redis-cli getrange foo 0 50
+&quot;#\n# Network services, Internet style\n#\n# Note that &quot;
+</code></pre><p>As you can see in the first line of the above session, the last argument of the<br><code>SET</code> command was not specified. The arguments are just <code>SET foo</code> without the<br>actual value I want my key to be set to.</p>
+<p>Instead, the <code>-x</code> option was specified and a file was redirected to the CLI’s<br>standard input. So the input was read, and was used as the final argument for<br>the command. This is useful for scripting.</p>
+<p>A different approach is to feed <code>redis-cli</code> a sequence of commands written in a<br>text file:</p>
+<pre><code>$ cat /tmp/commands.txt
+set foo 100
+incr foo
+append foo xxx
+get foo
+$ cat /tmp/commands.txt | redis-cli
+OK
+(integer) 101
+(integer) 6
+&quot;101xxx&quot;
+</code></pre><p>All the commands in <code>commands.txt</code> are executed one after the other by<br><code>redis-cli</code> as if they were typed by the user interactive. Strings can be<br>quoted inside the file if needed, so that it’s possible to have single<br>arguments with spaces or newlines or other special chars inside:</p>
+<pre><code>$ cat /tmp/commands.txt
+set foo &quot;This is a single argument&quot;
+strlen foo
+$ cat /tmp/commands.txt | redis-cli
+OK
+(integer) 25
+</code></pre><h2 id="Continuously-run-the-same-command"><a href="#Continuously-run-the-same-command" class="headerlink" title="Continuously run the same command"></a>Continuously run the same command</h2><p>It is possible to execute the same command a specified number of times<br>with a user selected pause between the executions. This is useful in<br>different contexts, for example when we want to continuously monitor some<br>key content or <code>INFO</code> field output, or when we want to simulate some<br>recurring write event (like pushing a new item into a list every 5 seconds).</p>
+<p>This feature is controlled by two options: <code>-r &lt;count&gt;</code> and <code>-i &lt;delay&gt;</code>.<br>The first states how many times to run a command, the second configures<br>the delay between the different command calls, in seconds (with the ability<br>to specify decimal numbers like 0.1 in order to mean 100 milliseconds).</p>
+<p>By default the interval (or delay) is set to 0, so commands are just executed<br>ASAP:</p>
+<pre><code>$ redis-cli -r 5 incr foo
+(integer) 1
+(integer) 2
+(integer) 3
+(integer) 4
+(integer) 5
+</code></pre><p>To run the same command forever, use <code>-1</code> as count.<br>So, in order to monitor over time the RSS memory size it’s possible<br>to use a command like the following:</p>
+<pre><code>$ redis-cli -r -1 -i 1 INFO | grep rss_human
+used_memory_rss_human:1.38M
+used_memory_rss_human:1.38M
+used_memory_rss_human:1.38M
+... a new line will be printed each second ...
+</code></pre><h2 id="Mass-insertion-of-data-using-redis-cli"><a href="#Mass-insertion-of-data-using-redis-cli" class="headerlink" title="Mass insertion of data using redis-cli"></a>Mass insertion of data using <code>redis-cli</code></h2><p>Mass insert using <code>redis-cli</code> is covered in a separated page since it’s a<br>worthwhile topic itself. Please refer to our<br><a href="/topics/mass-insert">mass insertion guide</a>.</p>
+<h2 id="CSV-output"><a href="#CSV-output" class="headerlink" title="CSV output"></a>CSV output</h2><p>Sometimes you may want to use <code>redis-cli</code> in order to quickly export data from<br>Redis to an external program. This can be accomplished using the CSV (Comma<br>Separated Values) output feature:</p>
+<pre><code>$ redis-cli lpush mylist a b c d
+(integer) 4
+$ redis-cli --csv lrange mylist 0 -1
+&quot;d&quot;,&quot;c&quot;,&quot;b&quot;,&quot;a&quot;
+</code></pre><p>Currently it’s not possible to export the whole DB like that, but only to run<br>single commands with CSV output.</p>
+<h2 id="Running-Lua-scripts"><a href="#Running-Lua-scripts" class="headerlink" title="Running Lua scripts"></a>Running Lua scripts</h2><p>The <code>redis-cli</code> has extensive support for using the new Lua debugging facility<br>of Lua scripting, available starting with Redis 3.2. For this feature, please<br>refer to the <a href="/topics/ldb">Redis Lua debugger documentation</a>.</p>
+<p>However, even without using the debugger, you can use <code>redis-cli</code> to<br>run scripts from a file in a way more comfortable way compared to typing<br>the script interactively into the shell or as an argument:</p>
+<pre><code>$ cat /tmp/script.lua
+return redis.call(&#39;set&#39;,KEYS[1],ARGV[1])
+$ redis-cli --eval /tmp/script.lua foo , bar
+OK
+</code></pre><p>The Redis <code>EVAL</code> command takes the list of keys the script uses, and the<br>other non key arguments, as different arrays. When calling <code>EVAL</code> you<br>provide the number of keys as a number. However with <code>redis-cli</code> and using<br>the <code>--eval</code> option above, there is no need to specify the number of keys<br>explicitly. Instead it uses the convention of separating keys and arguments<br>with a comma. This is why in the above call you see <code>foo , bar</code> as arguments.</p>
+<p>So <code>foo</code> will populate the <code>KEYS</code> array, and <code>bar</code> the <code>ARGV</code> array.</p>
+<p>The <code>--eval</code> option is useful when writing simple scripts. For more<br>complex work, using the Lua debugger is definitely more comfortable. It’s<br>possible to mix the two approaches, since the debugger also uses executing<br>scripts from an external file.</p>
+<h1 id="Interactive-mode"><a href="#Interactive-mode" class="headerlink" title="Interactive mode"></a>Interactive mode</h1><p>So far we explored how to use the Redis CLI as a command line program.<br>This is very useful for scripts and certain types of testing, however most<br>people will spend the majority of time in <code>redis-cli</code> using its interactive<br>mode.</p>
+<p>In interactive mode the user types Redis commands at the prompt. The command<br>is sent to the server, processed, and the reply is parsed back and rendered<br>into a simpler form to read.</p>
+<p>Nothing special is needed for running the CLI in interactive mode -<br>just launch it without any arguments and you are in:</p>
+<pre><code>$ redis-cli
+127.0.0.1:6379&gt; ping
+PONG
+</code></pre><p>The string <code>127.0.0.1:6379&gt;</code> is the prompt. It reminds you that you are<br>connected to a given Redis instance.</p>
+<p>The prompt changes as the server you are connected to changes, or when you<br>are operating on a database different than the database number zero:</p>
+<pre><code>127.0.0.1:6379&gt; select 2
+OK
+127.0.0.1:6379[2]&gt; dbsize
+(integer) 1
+127.0.0.1:6379[2]&gt; select 0
+OK
+127.0.0.1:6379&gt; dbsize
+(integer) 503
+</code></pre><h2 id="Handling-connections-and-reconnections"><a href="#Handling-connections-and-reconnections" class="headerlink" title="Handling connections and reconnections"></a>Handling connections and reconnections</h2><p>Using the <code>connect</code> command in interactive mode makes it possible to connect<br>to a different instance, by specifying the <em>hostname</em> and <em>port</em> we want<br>to connect to:</p>
+<pre><code>127.0.0.1:6379&gt; connect metal 6379
+metal:6379&gt; ping
+PONG
+</code></pre><p>As you can see the prompt changes accordingly. If the user attempts to connect<br>to an instance that is unreachable, the <code>redis-cli</code> goes into disconnected<br>mode and attempts to reconnect with each new command:</p>
+<pre><code>127.0.0.1:6379&gt; connect 127.0.0.1 9999
+Could not connect to Redis at 127.0.0.1:9999: Connection refused
+not connected&gt; ping
+Could not connect to Redis at 127.0.0.1:9999: Connection refused
+not connected&gt; ping
+Could not connect to Redis at 127.0.0.1:9999: Connection refused
+</code></pre><p>Generally after a disconnection is detected, the CLI always attempts to<br>reconnect transparently: if the attempt fails, it shows the error and<br>enters the disconnected state. The following is an example of disconnection<br>and reconnection:</p>
+<pre><code>127.0.0.1:6379&gt; debug restart
+Could not connect to Redis at 127.0.0.1:6379: Connection refused
+not connected&gt; ping
+PONG
+127.0.0.1:6379&gt; (now we are connected again)
+</code></pre><p>When a reconnection is performed, <code>redis-cli</code> automatically re-select the<br>last database number selected. However, all the other state about the<br>connection is lost, such as the state of a transaction if we<br>were in the middle of it:</p>
+<pre><code>$ redis-cli
+127.0.0.1:6379&gt; multi
+OK
+127.0.0.1:6379&gt; ping
+QUEUED
+
+( here the server is manually restarted )
+
+127.0.0.1:6379&gt; exec
+(error) ERR EXEC without MULTI
+</code></pre><p>This is usually not an issue when using the CLI in interactive mode for<br>testing, but you should be aware of this limitation.</p>
+<h2 id="Editing-history-completion-and-hints"><a href="#Editing-history-completion-and-hints" class="headerlink" title="Editing, history, completion and hints"></a>Editing, history, completion and hints</h2><p>Because <code>redis-cli</code> uses the<br><a href="http://github.com/antirez/linenoise" target="_blank" rel="noopener">linenoise line editing library</a>, it<br>always has line editing capabilities, without depending on <code>libreadline</code> or<br>other optional libraries.</p>
+<p>You can access a history of commands executed, in order to avoid retyping<br>them again and again, by pressing the arrow keys (up and down).<br>The history is preserved between restarts of the CLI, in a file called<br><code>.rediscli_history</code> inside the user home directory, as specified<br>by the <code>HOME</code> environment variable. It is possible to use a different<br>history filename by setting the <code>REDISCLI_HISTFILE</code> environment variable,<br>and disable it by setting it to <code>/dev/null</code>.</p>
+<p>The CLI is also able to perform command names completion by pressing the TAB<br>key, like in the following example:</p>
+<pre><code>127.0.0.1:6379&gt; Z&lt;TAB&gt;
+127.0.0.1:6379&gt; ZADD&lt;TAB&gt;
+127.0.0.1:6379&gt; ZCARD&lt;TAB&gt;
+</code></pre><p>Once you’ve typed a Redis command name at the prompt, the CLI will display<br>syntax hints. This behavior can be turned on and off via the CLI preferences.</p>
+<h2 id="Preferences"><a href="#Preferences" class="headerlink" title="Preferences"></a>Preferences</h2><p>There are two ways to customize the CLI’s behavior. The file <code>.redisclirc</code><br>in your home directory is loaded by the CLI on startup. Preferences can also<br>be set during a CLI session, in which case they will last only the the<br>duration of the session.</p>
+<p>To set preferences, use the special <code>:set</code> command. The following preferences<br>can be set, either by typing the command in the CLI or adding it to the<br><code>.redisclirc</code> file:</p>
+<ul>
+<li><code>:set hints</code> - enables syntax hints</li>
+<li><code>:set nohints</code> - disables syntax hints</li>
+</ul>
+<h2 id="Running-the-same-command-N-times"><a href="#Running-the-same-command-N-times" class="headerlink" title="Running the same command N times"></a>Running the same command N times</h2><p>It’s possible to run the same command multiple times by prefixing the command<br>name by a number:</p>
+<pre><code>127.0.0.1:6379&gt; 5 incr mycounter
+(integer) 1
+(integer) 2
+(integer) 3
+(integer) 4
+(integer) 5
+</code></pre><h2 id="Showing-help-about-Redis-commands"><a href="#Showing-help-about-Redis-commands" class="headerlink" title="Showing help about Redis commands"></a>Showing help about Redis commands</h2><p>Redis has a number of <a href="/commands">commands</a> and sometimes, as you test things,<br>you may not remember the exact order of arguments. <code>redis-cli</code> provides online<br>help for most Redis commands, using the <code>help</code> command. The command can be used<br>in two forms:</p>
+<ul>
+<li><code>help @&lt;category&gt;</code> shows all the commands about a given category. The<br>categories are: <code>@generic</code>, <code>@list</code>, <code>@set</code>, <code>@sorted_set</code>, <code>@hash</code>,<br><code>@pubsub</code>, <code>@transactions</code>, <code>@connection</code>, <code>@server</code>, <code>@scripting</code>,<br><code>@hyperloglog</code>.</li>
+<li><code>help &lt;commandname&gt;</code> shows specific help for the command given as argument.</li>
+</ul>
+<p>For example in order to show help for the <code>PFADD</code> command, use:</p>
+<p>   127.0.0.1:6379&gt; help PFADD</p>
+<p>  PFADD key element [element …]<br>  summary: Adds the specified elements to the specified HyperLogLog.<br>  since: 2.8.9</p>
+<p>Note that <code>help</code> supports TAB completion as well.</p>
+<h2 id="Clearing-the-terminal-screen"><a href="#Clearing-the-terminal-screen" class="headerlink" title="Clearing the terminal screen"></a>Clearing the terminal screen</h2><p>Using the <code>clear</code> command in interactive mode clears the terminal’s screen.</p>
+<h1 id="Special-modes-of-operation"><a href="#Special-modes-of-operation" class="headerlink" title="Special modes of operation"></a>Special modes of operation</h1><p>So far we saw two main modes of <code>redis-cli</code>.</p>
+<ul>
+<li>Command line execution of Redis commands.</li>
+<li>Interactive “REPL-like” usage.</li>
+</ul>
+<p>However the CLI performs other auxiliary tasks related to Redis that<br>are explained in the next sections:</p>
+<ul>
+<li>Monitoring tool to show continuous stats about a Redis server.</li>
+<li>Scanning a Redis database for very large keys.</li>
+<li>Key space scanner with pattern matching.</li>
+<li>Acting as a <a href="/topics/pubsub">Pub/Sub</a> client to subscribe to channels.</li>
+<li>Monitoring the commands executed into a Redis instance.</li>
+<li>Checking the <a href="/topics/latency">latency</a> of a Redis server in different ways.</li>
+<li>Checking the scheduler latency of the local computer.</li>
+<li>Transferring RDB backups from a remote Redis server locally.</li>
+<li>Acting as a Redis slave for showing what a slave receives.</li>
+<li>Simulating <a href="/topics/lru-cache">LRU</a> workloads for showing stats about keys hits.</li>
+<li>A client for the Lua debugger.</li>
+</ul>
+<h2 id="Continuous-stats-mode"><a href="#Continuous-stats-mode" class="headerlink" title="Continuous stats mode"></a>Continuous stats mode</h2><p>This is probably one of the lesser known features of <code>redis-cli</code>, and one<br>very useful in order to monitor Redis instances in real time.<br>To enable this mode, the <code>--stat</code> option is used.<br>The output is very clear about the behavior of the CLI in this mode:</p>
+<pre><code>$ redis-cli --stat
+------- data ------ --------------------- load -------------------- - child -
+keys       mem      clients blocked requests            connections
+506        1015.00K 1       0       24 (+0)             7
+506        1015.00K 1       0       25 (+1)             7
+506        3.40M    51      0       60461 (+60436)      57
+506        3.40M    51      0       146425 (+85964)     107
+507        3.40M    51      0       233844 (+87419)     157
+507        3.40M    51      0       321715 (+87871)     207
+508        3.40M    51      0       408642 (+86927)     257
+508        3.40M    51      0       497038 (+88396)     257
+</code></pre><p>In this mode a new line is printed every second with useful information and<br>the difference between the old data point. You can easily understand what’s<br>happening with memory usage, clients connected, and so forth.</p>
+<p>The <code>-i &lt;interval&gt;</code> option in this case works as a modifier in order to<br>change the frequency at which new lines are emitted. The default is one<br>second.</p>
+<h2 id="Scanning-for-big-keys"><a href="#Scanning-for-big-keys" class="headerlink" title="Scanning for big keys"></a>Scanning for big keys</h2><p>In this special mode, <code>redis-cli</code> works as a key space analyzer. It scans the<br>dataset for big keys, but also provides information about the data types<br>that the data set consists of. This mode is enabled with the <code>--bigkeys</code> option,<br>and produces quite a verbose output:</p>
+<pre><code>$ redis-cli --bigkeys
+
+# Scanning the entire keyspace to find biggest keys as well as
+# average sizes per key type.  You can use -i 0.1 to sleep 0.1 sec
+# per 100 SCAN commands (not usually needed).
+
+[00.00%] Biggest string found so far &#39;key-419&#39; with 3 bytes
+[05.14%] Biggest list   found so far &#39;mylist&#39; with 100004 items
+[35.77%] Biggest string found so far &#39;counter:__rand_int__&#39; with 6 bytes
+[73.91%] Biggest hash   found so far &#39;myobject&#39; with 3 fields
+
+-------- summary -------
+
+Sampled 506 keys in the keyspace!
+Total key length in bytes is 3452 (avg len 6.82)
+
+Biggest string found &#39;counter:__rand_int__&#39; has 6 bytes
+Biggest   list found &#39;mylist&#39; has 100004 items
+Biggest   hash found &#39;myobject&#39; has 3 fields
+
+504 strings with 1403 bytes (99.60% of keys, avg size 2.78)
+1 lists with 100004 items (00.20% of keys, avg size 100004.00)
+0 sets with 0 members (00.00% of keys, avg size 0.00)
+1 hashs with 3 fields (00.20% of keys, avg size 3.00)
+0 zsets with 0 members (00.00% of keys, avg size 0.00)
+</code></pre><p>In the first part of the output, each new key larger than the previous larger<br>key (of the same type) encountered is reported. The summary section<br>provides general stats about the data inside the Redis instance.</p>
+<p>The program uses the <code>SCAN</code> command, so it can be executed against a busy<br>server without impacting the operations, however the <code>-i</code> option can be<br>used in order to throttle the scanning process of the specified fraction<br>of second for each 100 keys requested. For example, <code>-i 0.1</code> will slow down<br>the program execution a lot, but will also reduce the load on the server<br>to a tiny amount.</p>
+<p>Note that the summary also reports in a cleaner form the biggest keys found<br>for each time. The initial output is just to provide some interesting info<br>ASAP if running against a very large data set.</p>
+<h2 id="Getting-a-list-of-keys"><a href="#Getting-a-list-of-keys" class="headerlink" title="Getting a list of keys"></a>Getting a list of keys</h2><p>It is also possible to scan the key space, again in a way that does not<br>block the Redis server (which does happen when you use a command<br>like <code>KEYS *</code>), and print all the key names, or filter them for specific<br>patterns. This mode, like the <code>--bigkeys</code> option, uses the <code>SCAN</code> command,<br>so keys may be reported multiple times if the dataset is changing, but no<br>key would ever be missing, if that key was present since the start of the<br>iteration. Because of the command that it uses this option is called <code>--scan</code>.</p>
+<pre><code>$ redis-cli --scan | head -10
+key-419
+key-71
+key-236
+key-50
+key-38
+key-458
+key-453
+key-499
+key-446
+key-371
+</code></pre><p>Note that <code>head -10</code> is used in order to print only the first lines of the<br>output.</p>
+<p>Scanning is able to use the underlying pattern matching capability of<br>the <code>SCAN</code> command with the <code>--pattern</code> option.</p>
+<pre><code>$ redis-cli --scan --pattern &#39;*-11*&#39;
+key-114
+key-117
+key-118
+key-113
+key-115
+key-112
+key-119
+key-11
+key-111
+key-110
+key-116
+</code></pre><p>Piping the output through the <code>wc</code> command can be used to count specific<br>kind of objects, by key name:</p>
+<pre><code>$ redis-cli --scan --pattern &#39;user:*&#39; | wc -l
+3829433
+</code></pre><h2 id="Pub-sub-mode"><a href="#Pub-sub-mode" class="headerlink" title="Pub/sub mode"></a>Pub/sub mode</h2><p>The CLI is able to publish messages in Redis Pub/Sub channels just using<br>the <code>PUBLISH</code> command. This is expected since the <code>PUBLISH</code> command is very<br>similar to any other command. Subscribing to channels in order to receive<br>messages is different - in this case we need to block and wait for<br>messages, so this is implemented as a special mode in <code>redis-cli</code>. Unlike<br>other special modes this mode is not enabled by using a special option,<br>but simply by using the <code>SUBSCRIBE</code> or <code>PSUBSCRIBE</code> command, both in<br>interactive or non interactive mode:</p>
+<pre><code>$ redis-cli psubscribe &#39;*&#39;
+Reading messages... (press Ctrl-C to quit)
+1) &quot;psubscribe&quot;
+2) &quot;*&quot;
+3) (integer) 1
+</code></pre><p>The <em>reading messages</em> message shows that we entered Pub/Sub mode.<br>When another client publishes some message in some channel, like you<br>can do using <code>redis-cli PUBLISH mychannel mymessage</code>, the CLI in Pub/Sub<br>mode will show something such as:</p>
+<pre><code>1) &quot;pmessage&quot;
+2) &quot;*&quot;
+3) &quot;mychannel&quot;
+4) &quot;mymessage&quot;
+</code></pre><p>This is very useful for debugging Pub/Sub issues.<br>To exit the Pub/Sub mode just process <code>CTRL-C</code>.</p>
+<h2 id="Monitoring-commands-executed-in-Redis"><a href="#Monitoring-commands-executed-in-Redis" class="headerlink" title="Monitoring commands executed in Redis"></a>Monitoring commands executed in Redis</h2><p>Similarly to the Pub/Sub mode, the monitoring mode is entered automatically<br>once you use the <code>MONITOR</code> mode. It will print all the commands received<br>by a Redis instance:</p>
+<pre><code>$ redis-cli monitor
+OK
+1460100081.165665 [0 127.0.0.1:51706] &quot;set&quot; &quot;foo&quot; &quot;bar&quot;
+1460100083.053365 [0 127.0.0.1:51707] &quot;get&quot; &quot;foo&quot;
+</code></pre><p>Note that it is possible to use to pipe the output, so you can monitor<br>for specific patterns using tools such as <code>grep</code>.</p>
+<h2 id="Monitoring-the-latency-of-Redis-instances"><a href="#Monitoring-the-latency-of-Redis-instances" class="headerlink" title="Monitoring the latency of Redis instances"></a>Monitoring the latency of Redis instances</h2><p>Redis is often used in contexts where latency is very critical. Latency<br>involves multiple moving parts within the application, from the client library<br>to the network stack, to the Redis instance itself.</p>
+<p>The CLI has multiple facilities for studying the latency of a Redis<br>instance and understanding the latency’s maximum, average and distribution.</p>
+<p>The basic latency checking tool is the <code>--latency</code> option. Using this<br>option the CLI runs a loop where the <code>PING</code> command is sent to the Redis<br>instance, and the time to get a reply is measured. This happens 100<br>times per second, and stats are updated in a real time in the console:</p>
+<pre><code>$ redis-cli --latency
+min: 0, max: 1, avg: 0.19 (427 samples)
+</code></pre><p>The stats are provided in milliseconds. Usually, the average latency of<br>a very fast instance tends to be overestimated a bit because of the<br>latency due to the kernel scheduler of the system running <code>redis-cli</code><br>itself, so the average latency of 0.19 above may easily be 0.01 or less.<br>However this is usually not a big problem, since we are interested in<br>events of a few millisecond or more.</p>
+<p>Sometimes it is useful to study how the maximum and average latencies<br>evolve during time. The <code>--latency-history</code> option is used for that<br>purpose: it works exactly like <code>--latency</code>, but every 15 seconds (by<br>default) a new sampling session is started from scratch:</p>
+<pre><code>$ redis-cli --latency-history
+min: 0, max: 1, avg: 0.14 (1314 samples) -- 15.01 seconds range
+min: 0, max: 1, avg: 0.18 (1299 samples) -- 15.00 seconds range
+min: 0, max: 1, avg: 0.20 (113 samples)^C
+</code></pre><p>You can change the sampling sessions’ length with the <code>-i &lt;interval&gt;</code> option.</p>
+<p>The most advanced latency study tool, but also a bit harder to<br>interpret for non experienced users, is the ability to use color terminals<br>to show a spectrum of latencies. You’ll see a colored output that indicates the<br>different percentages of samples, and different ASCII characters that indicate<br>different latency figures. This mode is enabled using the <code>--latency-dist</code><br>option:</p>
+<pre><code>$ redis-cli --latency-dist
+(output not displayed, requires a color terminal, try it!)
+</code></pre><p>There is another pretty unusual latency tool implemented inside <code>redis-cli</code>.<br>It does not check the latency of a Redis instance, but the latency of the<br>computer you are running <code>redis-cli</code> on. What latency you may ask?<br>The latency that’s intrinsic to the kernel scheduler, the hypervisor in case<br>of virtualized instances, and so forth.</p>
+<p>We call it <em>intrinsic latency</em> because it’s opaque to the programmer, mostly.<br>If your Redis instance has bad latency regardless of all the obvious things<br>that may be the source cause, it’s worth to check what’s the best your system<br>can do by running <code>redis-cli</code> in this special mode directly in the system you<br>are running Redis servers on.</p>
+<p>By measuring the intrinsic latency, you know that this is the baseline,<br>and Redis cannot outdo your system. In order to run the CLI<br>in this mode, use the <code>--intrinsic-latency &lt;test-time&gt;</code>. The test’s time<br>is in seconds, and specifies how many seconds <code>redis-cli</code> should check the<br>latency of the system it’s currently running on.</p>
+<pre><code>$ ./redis-cli --intrinsic-latency 5
+Max latency so far: 1 microseconds.
+Max latency so far: 7 microseconds.
+Max latency so far: 9 microseconds.
+Max latency so far: 11 microseconds.
+Max latency so far: 13 microseconds.
+Max latency so far: 15 microseconds.
+Max latency so far: 34 microseconds.
+Max latency so far: 82 microseconds.
+Max latency so far: 586 microseconds.
+Max latency so far: 739 microseconds.
+
+65433042 total runs (avg latency: 0.0764 microseconds / 764.14 nanoseconds per run).
+Worst run took 9671x longer than the average latency.
+</code></pre><p>IMPORTANT: this command must be executed on the computer you want to run Redis<br>server on, not on a different host. It does not even connect to a Redis instance<br>and performs the test only locally.</p>
+<p>In the above case, my system cannot do better than 739 microseconds of worst<br>case latency, so I can expect certain queries to run in a bit less than 1<br>millisecond from time to time.</p>
+<h2 id="Remote-backups-of-RDB-files"><a href="#Remote-backups-of-RDB-files" class="headerlink" title="Remote backups of RDB files"></a>Remote backups of RDB files</h2><p>During Redis replication’s first synchronization, the master and the slave<br>exchange the whole data set in form of an RDB file. This feature is exploited<br>by <code>redis-cli</code> in order to provide a remote backup facility, that allows to<br>transfer an RDB file from any Redis instance to the local computer running<br><code>redis-cli</code>. To use this mode, call the CLI with the <code>--rdb &lt;dest-filename&gt;</code><br>option:</p>
+<pre><code>$ redis-cli --rdb /tmp/dump.rdb
+SYNC sent to master, writing 13256 bytes to &#39;/tmp/dump.rdb&#39;
+Transfer finished with success.
+</code></pre><p>This is a simple but effective way to make sure you have disaster recovery<br>RDB backups of your Redis instance. However when using this options in<br>scripts or <code>cron</code> jobs, make sure to check the return value of the command.<br>If it is non zero, an error occurred like in the following example:</p>
+<pre><code>$ redis-cli --rdb /tmp/dump.rdb
+SYNC with master failed: -ERR Can&#39;t SYNC while not connected with my master
+$ echo $?
+1
+</code></pre><h2 id="Slave-mode"><a href="#Slave-mode" class="headerlink" title="Slave mode"></a>Slave mode</h2><p>The slave mode of the CLI is an advanced feature useful for<br>Redis developers and for debugging operations.<br>It allows to inspect what a master sends to its slaves in the replication<br>stream in order to propagate the writes to its replicas. The option<br>name is simply <code>--slave</code>. This is how it works:</p>
+<pre><code>$ redis-cli --slave
+SYNC with master, discarding 13256 bytes of bulk transfer...
+SYNC done. Logging commands from master.
+&quot;PING&quot;
+&quot;SELECT&quot;,&quot;0&quot;
+&quot;set&quot;,&quot;foo&quot;,&quot;bar&quot;
+&quot;PING&quot;
+&quot;incr&quot;,&quot;mycounter&quot;
+</code></pre><p>The command begins by discarding the RDB file of the first synchronization<br>and then logs each command received as in CSV format.</p>
+<p>If you think some of the commands are not replicated correctly in your slaves<br>this is a good way to check what’s happening, and also useful information<br>in order to improve the bug report.</p>
+<h2 id="Performing-an-LRU-simulation"><a href="#Performing-an-LRU-simulation" class="headerlink" title="Performing an LRU simulation"></a>Performing an LRU simulation</h2><p>Redis is often used as a cache with <a href="/topics/lru-cache">LRU eviction</a>.<br>Depending on the number of keys and the amount of memory allocated for the<br>cache (specified via the <code>maxmemory</code> directive), the amount of cache hits<br>and misses will change. Sometimes, simulating the rate of hits is very<br>useful to correctly provision your cache.</p>
+<p>The CLI has a special mode where it performs a simulation of GET and SET<br>operations, using an 80-20% power law distribution in the requests pattern.<br>This means that 20% of keys will be requested 80% of times, which is a<br>common distribution in caching scenarios.</p>
+<p>Theoretically, given the distribution of the requests and the Redis memory<br>overhead, it should be possible to compute the hit rate analytically with<br>with a mathematical formula. However, Redis can be configured with<br>different LRU settings (number of samples) and LRU’s implementation, which<br>is approximated in Redis, changes a lot between different versions. Similarly<br>the amount of memory per key may change between versions. That is why this<br>tool was built: its main motivation was for testing the quality of Redis’ LRU<br>implementation, but now is also useful in for testing how a given version<br>behaves with the settings you had in mind for your deployment.</p>
+<p>In order to use this mode, you need to specify the amount of keys<br>in the test. You also need to configure a <code>maxmemory</code> setting that<br>makes sense as a first try.</p>
+<p>IMPORTANT NOTE: Configuring the <code>maxmemory</code> setting in the Redis configuration<br>is crucial: if there is no cap to the maximum memory usage, the hit will<br>eventually be 100% since all the keys can be stored in memory. Or if you<br>specify too many keys and no maximum memory, eventually all the computer<br>RAM will be used. It is also needed to configure an appropriate<br><em>maxmemory policy</em>, most of the times what you want is <code>allkeys-lru</code>.</p>
+<p>In the following example I configured a memory limit of 100MB, and an LRU<br>simulation using 10 million keys.</p>
+<p>WARNING: the test uses pipelining and will stress the server, don’t use it<br>with production instances.</p>
+<pre><code>$ ./redis-cli --lru-test 10000000
+156000 Gets/sec | Hits: 4552 (2.92%) | Misses: 151448 (97.08%)
+153750 Gets/sec | Hits: 12906 (8.39%) | Misses: 140844 (91.61%)
+159250 Gets/sec | Hits: 21811 (13.70%) | Misses: 137439 (86.30%)
+151000 Gets/sec | Hits: 27615 (18.29%) | Misses: 123385 (81.71%)
+145000 Gets/sec | Hits: 32791 (22.61%) | Misses: 112209 (77.39%)
+157750 Gets/sec | Hits: 42178 (26.74%) | Misses: 115572 (73.26%)
+154500 Gets/sec | Hits: 47418 (30.69%) | Misses: 107082 (69.31%)
+151250 Gets/sec | Hits: 51636 (34.14%) | Misses: 99614 (65.86%)
+</code></pre><p>The program shows stats every second. As you see, in the first seconds<br>the cache starts to be populated. The misses rate later stabilizes into<br>the actual figure we can expect in the long time:</p>
+<pre><code>120750 Gets/sec | Hits: 48774 (40.39%) | Misses: 71976 (59.61%)
+122500 Gets/sec | Hits: 49052 (40.04%) | Misses: 73448 (59.96%)
+127000 Gets/sec | Hits: 50870 (40.06%) | Misses: 76130 (59.94%)
+124250 Gets/sec | Hits: 50147 (40.36%) | Misses: 74103 (59.64%)
+</code></pre><p>A miss rage of 59% may not be acceptable for our use case. So we know that<br>100MB of memory is not enough. Let’s try with half gigabyte. After a few<br>minutes we’ll see the output stabilize to the following figures:</p>
+<pre><code>140000 Gets/sec | Hits: 135376 (96.70%) | Misses: 4624 (3.30%)
+141250 Gets/sec | Hits: 136523 (96.65%) | Misses: 4727 (3.35%)
+140250 Gets/sec | Hits: 135457 (96.58%) | Misses: 4793 (3.42%)
+140500 Gets/sec | Hits: 135947 (96.76%) | Misses: 4553 (3.24%)
+</code></pre><p>So we know that with 500MB we are going well enough for our number of<br>keys (10 millions) and distribution (80-20 style).</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/06/SoftwareModeling&Design/Chapter2UML/" rel="next" title="chapter2 UML表示法概述">
+                <i class="fa fa-chevron-left"></i> chapter2 UML表示法概述
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/05/08/Tools/Consul/" rel="prev" title="Consul">
+                Consul <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/kejipigu.jpg" alt="纯阳子">
+            
+              <p class="site-author-name" itemprop="name">纯阳子</p>
+              <p class="site-description motion-element" itemprop="description">天还是很蓝的</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/chuhuilove" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-globe"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lovehui131125@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+  <script src="//cdn.bootcss.com/blueimp-md5/1.1.0/js/md5.min.js"></script>
+  <script>
+      var gitalk = new Gitalk({
+        clientID: '85ae836f21b451e3ae92',
+        clientSecret: 'dec7bfafa8aa5aaf17c7d8203a292cefe0cb86bd',
+        repo: 'BlogComments',
+        owner: 'chuhuilove',
+        admin: 'chuhuilove',
+        id: md5(location.pathname),
+        distractionFreeMode: 'true'
+      });
+      var div = document.createElement('div');
+      div.setAttribute("id", "gitalk_comments");
+      div.setAttribute("class", "post-nav");
+      var bro = document.getElementById('posts').getElementsByTagName('article');
+      bro = bro[0].getElementsByClassName('post-block');
+      bro = bro[0].getElementsByTagName('footer');
+      bro = bro[0];
+      bro.appendChild(div);
+      gitalk.render('gitalk_comments');
+  </script>
+
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#redis-cli-the-Redis-command-line-interface"><span class="nav-number">1.</span> <span class="nav-text">redis-cli, the Redis command line interface</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#description-“Learn-how-to-master-the-Redis-command-line-interface-something-you’ll-be-using-a-lot-in-order-to-administer-troubleshoot-and-experiment-with-Redis-”"><span class="nav-number">1.1.</span> <span class="nav-text">description: “Learn how to master the Redis command line interface, something you’ll be using a lot in order to administer, troubleshoot and experiment with Redis.”</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Command-line-usage"><span class="nav-number">2.</span> <span class="nav-text">Command line usage</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Host-port-password-and-database"><span class="nav-number">2.1.</span> <span class="nav-text">Host, port, password and database</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSL-TLS"><span class="nav-number">2.2.</span> <span class="nav-text">SSL/TLS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Getting-input-from-other-programs"><span class="nav-number">2.3.</span> <span class="nav-text">Getting input from other programs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Continuously-run-the-same-command"><span class="nav-number">2.4.</span> <span class="nav-text">Continuously run the same command</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mass-insertion-of-data-using-redis-cli"><span class="nav-number">2.5.</span> <span class="nav-text">Mass insertion of data using redis-cli</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CSV-output"><span class="nav-number">2.6.</span> <span class="nav-text">CSV output</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Running-Lua-scripts"><span class="nav-number">2.7.</span> <span class="nav-text">Running Lua scripts</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Interactive-mode"><span class="nav-number">3.</span> <span class="nav-text">Interactive mode</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Handling-connections-and-reconnections"><span class="nav-number">3.1.</span> <span class="nav-text">Handling connections and reconnections</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Editing-history-completion-and-hints"><span class="nav-number">3.2.</span> <span class="nav-text">Editing, history, completion and hints</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Preferences"><span class="nav-number">3.3.</span> <span class="nav-text">Preferences</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Running-the-same-command-N-times"><span class="nav-number">3.4.</span> <span class="nav-text">Running the same command N times</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Showing-help-about-Redis-commands"><span class="nav-number">3.5.</span> <span class="nav-text">Showing help about Redis commands</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Clearing-the-terminal-screen"><span class="nav-number">3.6.</span> <span class="nav-text">Clearing the terminal screen</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Special-modes-of-operation"><span class="nav-number">4.</span> <span class="nav-text">Special modes of operation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Continuous-stats-mode"><span class="nav-number">4.1.</span> <span class="nav-text">Continuous stats mode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Scanning-for-big-keys"><span class="nav-number">4.2.</span> <span class="nav-text">Scanning for big keys</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Getting-a-list-of-keys"><span class="nav-number">4.3.</span> <span class="nav-text">Getting a list of keys</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pub-sub-mode"><span class="nav-number">4.4.</span> <span class="nav-text">Pub/sub mode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Monitoring-commands-executed-in-Redis"><span class="nav-number">4.5.</span> <span class="nav-text">Monitoring commands executed in Redis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Monitoring-the-latency-of-Redis-instances"><span class="nav-number">4.6.</span> <span class="nav-text">Monitoring the latency of Redis instances</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Remote-backups-of-RDB-files"><span class="nav-number">4.7.</span> <span class="nav-text">Remote backups of RDB files</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Slave-mode"><span class="nav-number">4.8.</span> <span class="nav-text">Slave mode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Performing-an-LRU-simulation"><span class="nav-number">4.9.</span> <span class="nav-text">Performing an LRU simulation</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2019 &mdash; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">纯阳子</span>
+
+  
+</div>
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+-->
+
+
+<script>
+      var now = new Date();
+      function createtime() {
+          var grt= new Date("03/12/2019 12:00:00");//此处修改你的建站时间或者网站上线时间
+          now.setTime(now.getTime()+250);
+          days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days);
+          hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours);
+          if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+          mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;}
+          seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+          snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;}
+          document.getElementById("timeDate").innerHTML = "本站已安全运行 "+dnum+" 天 ";
+          document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒";
+      }
+  setInterval("createtime()",250);
+ </script>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
+
+

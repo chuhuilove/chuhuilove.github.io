@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+
+<script type="text/javascript" color="262,46,104" opacity="0" zindex="1" count="500" src="https://cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+ <script>
+   (function(){
+          if(''){
+              if (prompt('请输入文章密码,默认为123456,这个弹窗不好,需要改一改') !== ''){
+                  alert('密码错误！');
+                  history.back();
+              }
+          }
+      })();
+  </script>
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="MySQL,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="MySQL Server中的Status和System Variables">
+<meta name="keywords" content="MySQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL中常用的变量">
+<meta property="og:url" content="http://yoursite.com/2021/05/20/MySQL/MySQLVariables/index.html">
+<meta property="og:site_name" content="cyzi&#39;s blog">
+<meta property="og:description" content="MySQL Server中的Status和System Variables">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2021/05/20/MySQL/MySQLVariables/slow-query-log-1.png">
+<meta property="og:image" content="http://yoursite.com/2021/05/20/MySQL/MySQLVariables/slow-query-log-2.png">
+<meta property="og:updated_time" content="2021-05-20T12:22:50.571Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL中常用的变量">
+<meta name="twitter:description" content="MySQL Server中的Status和System Variables">
+<meta name="twitter:image" content="http://yoursite.com/2021/05/20/MySQL/MySQLVariables/slow-query-log-1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/05/20/MySQL/MySQLVariables/">
+
+
+
+
+
+  <title>MySQL中常用的变量 | cyzi's blog</title>
+  
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '',
+      xfbml      : true,
+      version    : 'v2.10'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/zh_Hans/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta custom-logo">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">cyzi's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">1+1=2</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/05/20/MySQL/MySQLVariables/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="纯阳子">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/kejipigu.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="cyzi's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MySQL中常用的变量</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-20T12:40:31+08:00">
+                2021-05-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  MySQL Server中的Status和System Variables
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>除非特别指定,否则缓冲区大小,长度和堆栈大小这些值的单位都是<code>Byte</code>.</strong></p>
+<h2 id="SHOW-Statement"><a href="#SHOW-Statement" class="headerlink" title="SHOW Statement"></a>SHOW Statement</h2><p>MySQL server的变量有两种类型<strong>Server system variables</strong>和<strong>Server status variables</strong>,针对不同的状态类型,查看的方式也有所差别.<br>查看<strong>Server system variables</strong>变量的语法是<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SHOW</span> [<span class="keyword">GLOBAL</span> | <span class="keyword">SESSION</span>] <span class="keyword">VARIABLES</span></span><br><span class="line">    [<span class="keyword">LIKE</span> <span class="string">'pattern'</span> | <span class="keyword">WHERE</span> expr]</span><br></pre></td></tr></table></figure></p>
+<p>查看<strong>Server status variables</strong>变量的语法是<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SHOW</span> [<span class="keyword">GLOBAL</span> | <span class="keyword">SESSION</span>] <span class="keyword">STATUS</span></span><br><span class="line">    [<span class="keyword">LIKE</span> <span class="string">'pattern'</span> | <span class="keyword">WHERE</span> expr]</span><br></pre></td></tr></table></figure></p>
+<p>这两种查看语法,都带有<code>[GLOBAL | SESSION]</code>,表示这两个修饰符是可选的.对于Server variables和Server status来说,这两个修饰符都有下面相同的含义:</p>
+<ul>
+<li>对于<code>GLOBAL</code>修饰符,语句显示<code>GLOBAL</code>级别的值.</li>
+<li>对于<code>SESSION</code>修饰符,语句显示对当前连接有效的值.如果variable或status没有<code>SESSION</code>级别的值,则显示<code>GLOBAL</code>级别的值.<code>LOCAL</code>是<code>SESSION</code>的同义词.</li>
+<li>没有设置修饰符,默认显示的是<code>SESSION</code>级别的值</li>
+</ul>
+<p>对于Server status variables而言,<code>GLOBAL</code>用来表示MySQL server本身某些方面的状态(例如<code>Aborted_connects</code>),或者是所有已连接到MySQL上的客户端的聚合状态(例如<code>Bytes_received</code>和<code>Bytes_sent</code>).<br>对于Server system variables而言,<code>GLOBAL</code>用于初始化新客户端连接到MySQL所对应的SESSION变量.</p>
+<h2 id="SET-Statement"><a href="#SET-Statement" class="headerlink" title="SET Statement"></a>SET Statement</h2><p>上面讲述了利用<code>SHOW</code>如何查看MySQL server中status and variable的值,接下来就是如何设置这些值,并不是所有status and variables的值都是可以设置的.<br>使用<code>SET</code>可以来设置一些系统变量,这里只讨论设置变量的方式,<code>SET</code>的其他用途这里不对赘述.</p>
+<ul>
+<li><p>要给<code>GLOBAL</code>级别的System Variables赋值,需要在变量名前面加上<code>GLOBAL</code>关键字或<code>@@GLOBAL.限定符</code>:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> <span class="keyword">GLOBAL</span> max_connections = <span class="number">1000</span>;</span><br><span class="line"><span class="keyword">SET</span> @@GLOBAL.max_connections = <span class="number">1000</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>要为<code>SESSION</code>级别的System Variables赋值,可以在变量名前面加上<code>SESSION</code>或<code>LOCAL</code>关键字,或者<code>@@SESSION.限定符</code>、<code>@@LOCAL.限定符</code>或<code>@@限定符</code>,更简单点,可以不设置任何关键字或修饰符:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> <span class="keyword">SESSION</span> sql_mode = <span class="string">'TRADITIONAL'</span>;</span><br><span class="line"><span class="keyword">SET</span> <span class="keyword">LOCAL</span> sql_mode = <span class="string">'TRADITIONAL'</span>;</span><br><span class="line"><span class="keyword">SET</span> @@SESSION.sql_mode = <span class="string">'TRADITIONAL'</span>;</span><br><span class="line"><span class="keyword">SET</span> @@LOCAL.sql_mode = <span class="string">'TRADITIONAL'</span>;</span><br><span class="line"><span class="keyword">SET</span> @@sql_mode = <span class="string">'TRADITIONAL'</span>;</span><br><span class="line"><span class="keyword">SET</span> sql_mode = <span class="string">'TRADITIONAL'</span>;</span><br></pre></td></tr></table></figure>
+<p>客户端可以更改自己的SESSION变量,但不能更改任何其他客户端的会话变量.<br>要将GLOBAL系统变量值设置为编译后的MySQL默认值,或将SESSION系统变量设置为当前对应的GLOBAL值,请将该变量设置为<code>DEFAULT</code>.</p>
+<h3 id="小案例"><a href="#小案例" class="headerlink" title="小案例"></a>小案例</h3><p>以设置慢SQL日志为例,先查询当前数据库中慢SQL日志是否开启:<br><img src="slow-query-log-1.png" alt></p>
+<p>可以看到,<code>slow_query_log</code>的值为<code>OFF</code>,这意味着当前数据库并没有开启,<code>slow_query_log_file</code>的值意味着慢SQL日志文件的存储位置.现在我们将慢SQL日志打开,并且将日志文件名称修改.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--由于slow_query_log和slow_query_log_file都是GLOBAL级别的变量,需要添加GLOBAL或@@GLOBAL修饰符</span></span><br><span class="line"><span class="keyword">SET</span> <span class="keyword">GLOBAL</span> slow_query_log=<span class="string">'ON'</span>;</span><br><span class="line"><span class="keyword">SET</span> @@GLOBAL.slow_query_log_file=<span class="string">'/var/lib/mysql/server-slow-cyzi.log'</span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="slow-query-log-2.png" alt><br> 现在已经成功修改了慢SQL日志的存储文件,执行一条慢SQL也会将日志写进这个指定的文件中.现在,我们想把这两个值修改成默认值,就可以执行以下SQL:<br> <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> <span class="keyword">GLOBAL</span> slow_query_log=<span class="keyword">DEFAULT</span>;</span><br><span class="line"><span class="keyword">SET</span> @@GLOBAL.slow_query_log_file=<span class="keyword">DEFAULT</span>;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Server-system-variables-服务系统变量"><a href="#Server-system-variables-服务系统变量" class="headerlink" title="Server system variables(服务系统变量)"></a>Server system variables(服务系统变量)</h2><h3 id="datadir"><a href="#datadir" class="headerlink" title="datadir"></a><span class="variableStyle">datadir</span></h3><p> MySQL server数据目录的路径.</p>
+<h3 id="general-log"><a href="#general-log" class="headerlink" title="general_log"></a><span class="variableStyle">general_log</span></h3><p><code>general-log[={OFF|ON}]</code>是否启用常规查询日志.值可以为0(或<code>OFF</code>)来禁用日志,也可以为1(或<code>ON</code>)来启用日志.日志输出的路径由<code>log_output</code>系统变量控制;如果该值为<code>NONE</code>,则即使启用了日志,也不会写入任何日志记录.</p>
+<h3 id="general-log-file"><a href="#general-log-file" class="headerlink" title="general_log_file"></a><span class="variableStyle">general_log_file</span></h3><p><code>general-log-file=file_name</code>,常规查询日志文件的名称.默认值是<code>host_name.log</code>,但是可以通过<code>--general_log_file</code>选项改变.</p>
+<h3 id="log-output"><a href="#log-output" class="headerlink" title="log_output"></a><span class="variableStyle">log_output</span></h3><p>常规查询日志和慢SQL日志输出的一个或多个目标位置.该值是一个列表,该列表从<code>TABLE</code>,<code>FILE</code>和<code>NONE</code>中选择一个或多个逗号分隔的单词.默认情况下,这个变量的值是<code>FILE</code>,在<code>general_log</code>和<code>slow_query_log</code>都开启的情况下,MySQL server中的日志将会写到<code>slow_query_log_file</code>和<code>general_log_file</code>变量的值所代表的文件文件中.若是这个变量的值是<code>TABLE</code>,则日志会分别写入<code>mysql.general_log</code>(常规日志)和<code>mysql.slow_log</code>(慢sql日志)这两张表中.若是这个变量的值是<code>NONE</code>,则既不会将日志写入到表中,也不会写入到文件中.因为变量的值可以设置多个,比如<code>TABLE,FILE</code>,则日志既会写入到文件中,也会写入到表中.</p>
+<h3 id="slow-query-log"><a href="#slow-query-log" class="headerlink" title="slow_query_log"></a><span class="variableStyle">slow_query_log</span></h3><p><code>slow_query_log=[={OFF|ON}]</code>.慢SQL日志是否开启.取值为0(或<code>OFF</code>)表示关闭日志,1(或<code>ON</code>)表示开启日志.日志输出的目标位置由<code>log_output</code>系统变量控制;如果该值为<code>NONE</code>,则即使启用了日志,也不写入日志.</p>
+<h3 id="slow-query-log-file"><a href="#slow-query-log-file" class="headerlink" title="slow_query_log_file"></a><span class="variableStyle">slow_query_log_file</span></h3><p><code>slow-query-log-file=file_name</code>.慢SQL日志的名称.默认值是<code>host_name-slow.log</code>,但是初始值可以被<code>--slow_query_log_file</code>选项改变.<br>只有<code>slow_query_log_file</code>的值是确定的,并且<code>slow_query_log=ON</code>,慢SQL日志才会开启并写到文件中.</p>
+<h2 id="Server-status-variables-服务状态变量"><a href="#Server-status-variables-服务状态变量" class="headerlink" title="Server status variables(服务状态变量)"></a>Server status variables(服务状态变量)</h2><h3 id="Aborted-clients"><a href="#Aborted-clients" class="headerlink" title="Aborted_clients"></a><span class="variableStyle">Aborted_clients</span></h3><p>由于客户端在未正确关闭连接的情况下死亡而中止的连接数</p>
+<h3 id="Aborted-connects"><a href="#Aborted-connects" class="headerlink" title="Aborted_connects"></a><span class="variableStyle">Aborted_connects</span></h3><p>表示连接到MySQL server失败的次数.</p>
+<h3 id="Bytes-received"><a href="#Bytes-received" class="headerlink" title="Bytes_received"></a><span class="variableStyle">Bytes_received</span></h3><p>表示从所有客户端接收到的字节数量.</p>
+<h3 id="Bytes-sent"><a href="#Bytes-sent" class="headerlink" title="Bytes_sent"></a><span class="variableStyle">Bytes_sent</span></h3><p>表示发送到所有客户端的字节数量.</p>
+<h3 id="Connections"><a href="#Connections" class="headerlink" title="Connections"></a><span class="variableStyle">Connections</span></h3><p>尝试连接MySQL服务器的次数(不论成功与否).</p>
+<style>
+.variableStyle{
+color:#555;
+font-family: consolas, Menlo, "PingFang SC", "Microsoft YaHei", monospace;
+font-size: 15px;
+background-color:#eee;
+}
+</style>
+
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MySQL/" rel="tag"># MySQL</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/20/Java/JVM/JavaTools/" rel="next" title="java辅助工具">
+                <i class="fa fa-chevron-left"></i> java辅助工具
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/05/20/Tools/WindowsTutorials/" rel="prev" title="windows上的一些快捷操作">
+                windows上的一些快捷操作 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/kejipigu.jpg" alt="纯阳子">
+            
+              <p class="site-author-name" itemprop="name">纯阳子</p>
+              <p class="site-description motion-element" itemprop="description">天还是很蓝的</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/chuhuilove" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-globe"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lovehui131125@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+  <script src="//cdn.bootcss.com/blueimp-md5/1.1.0/js/md5.min.js"></script>
+  <script>
+      var gitalk = new Gitalk({
+        clientID: '85ae836f21b451e3ae92',
+        clientSecret: 'dec7bfafa8aa5aaf17c7d8203a292cefe0cb86bd',
+        repo: 'BlogComments',
+        owner: 'chuhuilove',
+        admin: 'chuhuilove',
+        id: md5(location.pathname),
+        distractionFreeMode: 'true'
+      });
+      var div = document.createElement('div');
+      div.setAttribute("id", "gitalk_comments");
+      div.setAttribute("class", "post-nav");
+      var bro = document.getElementById('posts').getElementsByTagName('article');
+      bro = bro[0].getElementsByClassName('post-block');
+      bro = bro[0].getElementsByTagName('footer');
+      bro = bro[0];
+      bro.appendChild(div);
+      gitalk.render('gitalk_comments');
+  </script>
+
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SHOW-Statement"><span class="nav-number">1.</span> <span class="nav-text">SHOW Statement</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SET-Statement"><span class="nav-number">2.</span> <span class="nav-text">SET Statement</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#小案例"><span class="nav-number">2.1.</span> <span class="nav-text">小案例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Server-system-variables-服务系统变量"><span class="nav-number">3.</span> <span class="nav-text">Server system variables(服务系统变量)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#datadir"><span class="nav-number">3.1.</span> <span class="nav-text">datadir</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#general-log"><span class="nav-number">3.2.</span> <span class="nav-text">general_log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#general-log-file"><span class="nav-number">3.3.</span> <span class="nav-text">general_log_file</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#log-output"><span class="nav-number">3.4.</span> <span class="nav-text">log_output</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#slow-query-log"><span class="nav-number">3.5.</span> <span class="nav-text">slow_query_log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#slow-query-log-file"><span class="nav-number">3.6.</span> <span class="nav-text">slow_query_log_file</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Server-status-variables-服务状态变量"><span class="nav-number">4.</span> <span class="nav-text">Server status variables(服务状态变量)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Aborted-clients"><span class="nav-number">4.1.</span> <span class="nav-text">Aborted_clients</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Aborted-connects"><span class="nav-number">4.2.</span> <span class="nav-text">Aborted_connects</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bytes-received"><span class="nav-number">4.3.</span> <span class="nav-text">Bytes_received</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bytes-sent"><span class="nav-number">4.4.</span> <span class="nav-text">Bytes_sent</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Connections"><span class="nav-number">4.5.</span> <span class="nav-text">Connections</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2019 &mdash; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">纯阳子</span>
+
+  
+</div>
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+-->
+
+
+<script>
+      var now = new Date();
+      function createtime() {
+          var grt= new Date("03/12/2019 12:00:00");//此处修改你的建站时间或者网站上线时间
+          now.setTime(now.getTime()+250);
+          days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days);
+          hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours);
+          if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+          mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;}
+          seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+          snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;}
+          document.getElementById("timeDate").innerHTML = "本站已安全运行 "+dnum+" 天 ";
+          document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒";
+      }
+  setInterval("createtime()",250);
+ </script>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
+
+

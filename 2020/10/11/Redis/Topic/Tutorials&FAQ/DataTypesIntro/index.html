@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+
+<script type="text/javascript" color="262,46,104" opacity="0" zindex="1" count="500" src="https://cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+ <script>
+   (function(){
+          if(''){
+              if (prompt('请输入文章密码,默认为123456,这个弹窗不好,需要改一改') !== ''){
+                  alert('密码错误！');
+                  history.back();
+              }
+          }
+      })();
+  </script>
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Redis,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="这是学习Redis API和数据模型的一个很好的起点.">
+<meta name="keywords" content="Redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="An introduction to Redis data types and abstractions">
+<meta property="og:url" content="http://yoursite.com/2020/10/11/Redis/Topic/Tutorials&FAQ/DataTypesIntro/index.html">
+<meta property="og:site_name" content="cyzi&#39;s blog">
+<meta property="og:description" content="这是学习Redis API和数据模型的一个很好的起点.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2021-05-06T14:24:00.938Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="An introduction to Redis data types and abstractions">
+<meta name="twitter:description" content="这是学习Redis API和数据模型的一个很好的起点.">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/10/11/Redis/Topic/Tutorials&FAQ/DataTypesIntro/">
+
+
+
+
+
+  <title>An introduction to Redis data types and abstractions | cyzi's blog</title>
+  
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '',
+      xfbml      : true,
+      version    : 'v2.10'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/zh_Hans/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta custom-logo">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">cyzi's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">1+1=2</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/10/11/Redis/Topic/Tutorials&FAQ/DataTypesIntro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="纯阳子">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/kejipigu.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="cyzi's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">An introduction to Redis data types and abstractions</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-11T09:40:04+08:00">
+                2020-10-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index">
+                    <span itemprop="name">Redis</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  这是学习Redis API和数据模型的一个很好的起点.
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Redis不是一个<em>普通</em>的K-V存储库,它实际上是一个<em>数据结构服务器</em>,其支持不同种类的值.这意味着,在传统的K-V存储中,你可以将字符串K与字符串V关联起来,而在Redis中,V不仅限于简单的字符串,还可以包含更复杂的数据结构.下面的列表是Redis所支持的所有数据结构,这将在本教程中单独介绍:</p>
+<ul>
+<li>Binary-safe 字符串.</li>
+<li>Lists: 根据插入顺序排序的字符串元素集合.其内核结构是<em>linked lists</em>,而非<em>array lists</em>.</li>
+<li>Sets: 唯一的,未排序的字符串元素的集合.</li>
+<li>Sorted sets, 和Sets类似,但是每个字符串元素都和一个被称为<em>score</em>的浮点数相关联.元素总是按照它们的score进行排序,因此与Sets不同之处在于,Sorted sets可以检索一个范围的元素(例如,你可能会问:给出前10个元素,或后10个元素).</li>
+<li>Hashes, 它是由与值相关联的字段组成的映射.字段和值都是字符串.这与Ruby或Python的hash非常相似.</li>
+<li>Bit arrays (或simply bitmaps): 使用特殊命令,可以像处理位数组一样处理字符串值:你可以设置和清除单个bit,计算所有设置为1的bit,查找第一个设置或未设置的bit,等等.</li>
+<li>HyperLogLogs: 这是一个概率数据结构,用于估计集合的基数.实际上,它比看起来更简单…请参阅本教程的HyperLogLog部分.</li>
+<li>Streams: append-only collections of map-like entries that provide an abstract log data type. They are covered in depth in the <a href>Introduction to Redis Streams</a>.</li>
+</ul>
+<p>从<a href="/commands">command reference</a>掌握这些数据类型如何工作以及使用什么来解决给定的问题实际上不是那么容易,因此,本文档是Redis数据类型及其最常见模式的速成教程.</p>
+<p>所有示例都是使用<code>redis-cli</code>工具,这是一个简单但方便的命令行工具,来对Redis服务器发出命令.</p>
+<h2 id="Redis-keys"><a href="#Redis-keys" class="headerlink" title="Redis keys"></a>Redis keys</h2><p>Redis中的key是binary safe,这意味着你可以使用任何二进制序列作为key,比如一个字符串”foo”,或者一个JPEG文件的内容.空字符串也是一个有效的key.</p>
+<p>关于key的其他规则:</p>
+<ul>
+<li><strong>不推荐使用非常长的key</strong>.例如,一个1024字节的key不仅在内存存储方面会造成空间的浪费,并且在数据集合中查找key可能还需要进行多次代价高昂的比较.即使当手头的任务是匹配一个大值的存在时,对它进行散列(例如使用SHA1)也是一个更好的方法,特别是从内存和带宽的角度来看.</li>
+<li><strong>不推荐使用非常短的key</strong>.如果你可以写”user:1000:followers”,那么把”u1000flw”作为key就没有什么意义了.前者可读性更强,与key对象本身和值对象使用的空间相比,增加的空间很小.虽然较短的key显然会消耗更少的内存,但程序员的工作是找到正确的平衡.</li>
+<li><strong>Try to stick with a schema</strong>.例如,”object-type:id”就是一个不错的做法,如”user:1000”.点或破折号通常用于多词字段,如”comment:1234:reply.to” or “comment:1234:reply-to”.</li>
+<li><strong>Redis所允许的key的最大长度是512 MB</strong>.</li>
+</ul>
+<p><a name="strings"></a></p>
+<h2 id="Redis-Strings"><a href="#Redis-Strings" class="headerlink" title="Redis Strings"></a>Redis Strings</h2><p>Redis字符串类型是你能与一个Redis key关联的最简单的值类型.它是Memcached中唯一的数据类型,所以新手在Redis中使用它也是很自然的.</p>
+<p>因为Redis key是字符串,当我们也使用字符串类型作为value时,实际上就是将一个字符串映射到另外一个字符串.字符串数据类型在许多用例中都很有用,比如缓存HTML 片段或页面.</p>
+<p>让我们用<code>redis-cli</code>(本章中执行的所有示例使用的都是<code>redis-cli</code>)稍微处理一下字符串类型.</p>
+<pre><code>&gt; set mykey somevalue
+OK
+&gt; get mykey
+&quot;somevalue&quot;
+</code></pre><p>正如你所看到的,使用<code>SET</code>和<code>GET</code>命令是我们设置和检索字符串值的方式.注意,在key已经存在的情况下,<code>SET</code>将替换已经存储到key中的任何现有值,无视key所关联的value的类型.所以<code>SET</code>执行的是赋值操作.</p>
+<p>Value可以是任何种类的字符串(包括二进制数据),例如,你可以在值中存储jpeg图像.Value大小不能大于512 MB.</p>
+<p><code>SET</code>命令有有趣的选项,它们提供了额外的参数.例如,如果key已经存在,我可以要求<code>SET</code>失败,反之,只有key已经存在,<code>SET</code>才能成功:</p>
+<pre><code>&gt; set mykey newval nx
+(nil)
+&gt; set mykey newval xx
+OK
+</code></pre><p>即使字符串是Redis的基本值,你也可以用它们执行一些有趣的操作.例如,原子增量.</p>
+<pre><code>&gt; set counter 100
+OK
+&gt; incr counter
+(integer) 101
+&gt; incr counter
+(integer) 102
+&gt; incrby counter 50
+(integer) 152
+</code></pre><p><a href="/commands/incr">INCR</a>命令将字符串值解析为整数,并将其递增1,最后将获得的值设置为新值.还有一些其他类似的命令<a href="/commands/incrby">INCRBY</a>,<a href="/commands/decr">DECR</a>和<a href="/commands/decrby">DECRBY</a>.在内部,它们始终是相同的命令,只是执行方式略有不同.<br>INCR是原子的意味着什么?即使多个客户端针对相同的key发出INCR,也永远不会进入竞争条件.例如,永远不会发生客户端1和客户端2同时读取到”10”,并且两者都递增到11,并将新值设置为11的情况.最终值将始终为12,并且当所有其他客户端不同时执行命令时,都会执行读取增量设置操作.</p>
+<p>有许多用于操作字符串的命令.比如<code>GETSET</code>命令将key设置为新值,旧值作为返回结果.例如,如果你的系统在每次网站接收新访客时使用<code>INCR</code>递增Redis key,则可以使用此命令.你可能希望每小时收集一次此信息,而又不会丢失任何增量.你可以<code>GETSET</code> key,为其分配新值”0”,然后回读旧值.</p>
+<p>在单个命令中设置或检索多个K-V的能力也有助于减少延迟.<code>MSET</code>和<code>MGET</code>命令能够满足这种需求:</p>
+<pre><code>&gt; mset a 10 b 20 c 30
+OK
+&gt; mget a b c
+1) &quot;10&quot;
+2) &quot;20&quot;
+3) &quot;30&quot;
+</code></pre><p>使用<code>MGET</code>时,Redis返回一个数组值.</p>
+<h2 id="Altering-and-querying-the-key-space"><a href="#Altering-and-querying-the-key-space" class="headerlink" title="Altering and querying the key space"></a>Altering and querying the key space</h2><p>有些命令不是在特定类型上定义的,但在与key空间交互时很有用,因此可以与任何类型的key一起使用.<br>例如,<code>EXISTS</code>命令返回1或0来表示给定的key是否存在于数据库中,而<code>DEL</code>命令则删除key及其相关value,无视value的内容的类型.</p>
+<pre><code>&gt; set mykey hello
+OK
+&gt; exists mykey
+(integer) 1
+&gt; del mykey
+(integer) 1
+&gt; exists mykey
+(integer) 0
+</code></pre><p>从示例中,还可以看到<code>DEL</code>本身返回1或0,取决于key是否被删除(key存在返回1,key不存在返回0).<br>有许多与键空间相关的命令,上面的两个以及<code>TYPE</code>是最基本的命令,<code>TYPE</code>它返回存储在指定key上的value的类型:</p>
+<pre><code>&gt; set mykey x
+OK
+&gt; type mykey
+string
+&gt; del mykey
+(integer) 1
+&gt; type mykey
+none
+</code></pre><h2 id="Redis-expires-keys-with-limited-time-to-live"><a href="#Redis-expires-keys-with-limited-time-to-live" class="headerlink" title="Redis expires: keys with limited time to live"></a>Redis expires: keys with limited time to live</h2><p>在继续其他更复杂的数据结构之前,我们还需要讨论另一个功能,该功能不管值类型如何都可以使用,该功能称为<strong>Redis expires</strong>.基本上,你可以为任何key设置一个存活时间.当存储时间结束时,key会自动销毁,就像用户对key调用<code>DEL</code>命令一样.</p>
+<p>关于Redis expires 的快速信息:</p>
+<ul>
+<li>它们可以使用秒或毫秒精度进行设置.</li>
+<li>然而,expire时间解析总是1毫秒.</li>
+<li>关于expire的信息被复制并保留在磁盘上,实际上Redis服务器保持停止状态的时间已经过去(这意味着Redis保存了key的expire).</li>
+</ul>
+<p>为key设置expires很简单:</p>
+<pre><code>&gt; set key some-value
+OK
+&gt; expire key 5
+(integer) 1
+&gt; get key (immediately)
+&quot;some-value&quot;
+&gt; get key (after some time)
+(nil)
+</code></pre><p>key在两个<code>GET</code>调用之间消失了,因为第二次调用比第一次调用延迟了5秒多.在上面的例子中,我们使用了<code>EXPIRE</code>来设置expire(它也可以用来为已经有expire的key设置不同的expire,比如<code>PERSIST</code>可以用来删除expire并使key永久保存).其实,我们也可以使用其他Redis命令来创建具有expire的key.比如,使用<code>SET</code>的选项:</p>
+<pre><code>&gt; set key 100 ex 10
+OK
+&gt; ttl key
+(integer) 9
+</code></pre><p>上面的示例设置了一个字符串值为<code>100</code>的键,其expire为10秒.后面调用<code>TTL</code>命令,用来检查该key的剩余存活时间.<br>为了设置和检查以毫秒为单位的expire,查看 检查<code>PEXPIRE</code>和<code>PTTL</code>命令,以及<code>SET</code>选项的完整列表.</p>
+<p><a name="lists"></a></p>
+<h2 id="Redis-Lists"><a href="#Redis-Lists" class="headerlink" title="Redis Lists"></a>Redis Lists</h2><p>要解释List数据类型,最好先从一点理论开始,因为术语<em>List</em>经常被信息技术人员以一种不恰当的方式使用.例如,”Python Lists”并不是它的名字所暗示的那样(链表),而是数组(相同的数据类型在Ruby中实际上称为数组).<br>从一个非常一般的角度来看,List就是一个有序元素的序列:10,20,1,2,3就是一个list.但是使用数组实现的List的属性与使用<em>Linked List</em>实现的List的属性有很大的不同.<br>Redis lists是通过Linked Lists实现的.这意味着,即使List中有数百万个元素,在列表的头部或尾部添加新元素的操作也会<em>在常量时间内</em>执行完毕.使用<code>LPUSH</code>命令向包含10个元素的List头部添加新元素的速度与向包含1000万个元素的List头部添加一个元素的速度相同.<br>说完了优点,那么缺点呢?在用数组实现的List中<em>通过索引</em>访问元素是非常快的(常量时间),而在用链表实现的List中访问元素就没那么快了(操作需要的工作量与被访问元素的索引成比例).Redis List是通过链表实现的,因为对于一个数据库系统来说,能够以非常快的方式向一个非常长的列表中添加元素是非常重要的.另一个强大的优势,正如你马上会看到的,是Redis List可以在恒定的时间内以恒定的长度获取.<br>快速访问大量元素集合的中间部分时,可以使用一种不同的数据结构,改结构称为Sorted sets.Sorted sets将在本教程的后面介绍.</p>
+<h2 id="First-steps-with-Redis-Lists"><a href="#First-steps-with-Redis-Lists" class="headerlink" title="First steps with Redis Lists"></a>First steps with Redis Lists</h2><p><code>LPUSH</code>命令添加新元素到List的左侧(List头部), <code>RPUSH</code>命令添加新元素到List的右侧(List尾部).最后,<code>LRANGE</code>命令从列表中提取一定范围的元素.</p>
+<pre><code>&gt; rpush mylist A
+(integer) 1
+&gt; rpush mylist B
+(integer) 2
+&gt; lpush mylist first
+(integer) 3
+&gt; lrange mylist 0 -1
+1) &quot;first&quot;
+2) &quot;A&quot;
+3) &quot;B&quot;
+</code></pre><p>注意<a href="/commands/lrange">LRANGE</a>接受两个索引,这两个索引分别是返回的范围的第一个和最后一个元素的索引.两个索引都可以是负数,如果索引是负数,则相当于告诉Redis从末尾开始计数:-1是最后一个元素,-2是列表的倒数第二个元素,依此类推.<br>正如你可以看到的,<code>RPUSH</code>追加元素到列表右侧,<code>LPUSH</code>追加元素到列表的左侧.</p>
+<p>两个命令都是<em>variadic commands</em>,意味着一次调用,可以将多个元素推送到列表中:</p>
+<pre><code>&gt; rpush mylist 1 2 3 4 5 &quot;foo bar&quot;
+(integer) 9
+&gt; lrange mylist 0 -1
+1) &quot;first&quot;
+2) &quot;A&quot;
+3) &quot;B&quot;
+4) &quot;1&quot;
+5) &quot;2&quot;
+6) &quot;3&quot;
+7) &quot;4&quot;
+8) &quot;5&quot;
+9) &quot;foo bar&quot;
+</code></pre><p>Redis List中定义的另一个重要操作是<em>弹出元素</em>.弹出元素是同时从列表中检索元素和从列表中删除元素的操作.你可以从左和右弹出元素,类似于你可以在列表的两端推送元素:</p>
+<pre><code>&gt; rpush mylist a b c
+(integer) 3
+&gt; rpop mylist
+&quot;c&quot;
+&gt; rpop mylist
+&quot;b&quot;
+&gt; rpop mylist
+&quot;a&quot;
+</code></pre><p>我们添加了三个元素并弹出三个元素,因此在这个命令序列的末尾,列表为空,没有更多的元素能被弹出.如果我们尝试取出另一个元素,这就是我们得到的结果:</p>
+<pre><code>&gt; rpop mylist
+(nil)
+</code></pre><p>Redis返回一个空值,表示列表中没有元素.</p>
+<h2 id="Common-use-cases-for-lists"><a href="#Common-use-cases-for-lists" class="headerlink" title="Common use cases for lists"></a>Common use cases for lists</h2><p>List对于许多任务非常有用,下面是两个非常有代表性的用例:</p>
+<ul>
+<li>记住用户在社交网络上发布的最近更新.</li>
+<li>进程(线程)之间的通信,使用消费者-生产者模式,生产者将items推入List,消费者(通常是<em>worker</em>)消费这些items并执行操作.Redis有特殊的List命令使这个用例更可靠和有效.</li>
+</ul>
+<p>比如两个流行的Ruby库<a href="https://github.com/resque/resque" target="_blank" rel="noopener">resque</a>和<a href="https://github.com/mperham/sidekiq" target="_blank" rel="noopener">sidekiq</a>在后台使用Redis列表来实现后台作业.<br>流行的Twitter社交网络<a href="http://www.infoq.com/presentations/realtimedelivery-twitter" target="_blank" rel="noopener">将用户发布的最新推文</a>放入Redis List中.</p>
+<p>为了一步一步地描述一个常见的用例,假设你的主页显示了在照片共享社交网络中发布的最新照片,并且你希望加快访问速度.</p>
+<ul>
+<li>每当用户发布一张新照片时,我们就用<code>LPUSH</code>(添加到左侧)将其ID添加到一个List中.</li>
+<li>当用户访问主页时,我们使用<code>LRANGE 0 9</code>来获得最近发布的10个items.</li>
+</ul>
+<h2 id="Capped-lists"><a href="#Capped-lists" class="headerlink" title="Capped lists"></a>Capped lists</h2><p>在很多情况下,我们只是想使用List来存储<em>最新的items</em>,无论items是社交网络更新,日志或其他任何数据.<br>Redis允许我们使用列表作为上限集合,使用<code>LTRIM</code>命令记住最近的N个items并丢弃所有最旧的items.<br><code>LTRIM</code>命令和<code>LRANGE</code>类似,但是<strong>不是显示指定的元素范围</strong>,而是将这个List内的值设置为范围内的值.所有超出给定范围的元素被移除.<br>举个例子会更清楚:</p>
+<pre><code>&gt; rpush mylist 1 2 3 4 5
+(integer) 5
+&gt; ltrim mylist 0 2
+OK
+&gt; lrange mylist 0 -1
+1) &quot;1&quot;
+2) &quot;2&quot;
+3) &quot;3&quot;
+</code></pre><p>上面的<code>LTRIM</code>命令告诉Redis只列出索引从0到2中的元素,其他的元素都将被丢弃. 这允许一个非常简单但有用的模式:一起执行List push操作+List trim操作,以便添加新元素并丢弃超出限制的元素:</p>
+<pre><code>LPUSH mylist &lt;some element&gt;
+LTRIM mylist 0 999
+</code></pre><p>上面是一组添加了一些新元素,并且只接受1000个最新元素的命令组合.使用<code>LRANGE</code>,你可以访问顶部的元素,而不需要记住旧的数据.</p>
+<p>注意: 虽然<code>LRANGE</code>在技术上是一个O(N)命令,但访问列表头部或尾部的小范围元素是一个常量时间操作.</p>
+<h2 id="Blocking-operations-on-lists"><a href="#Blocking-operations-on-lists" class="headerlink" title="Blocking operations on lists"></a>Blocking operations on lists</h2><p>List有一个特殊的特性,使其适合于实现队列,通常作为进程间通信系统的构建块:阻塞操作.<br>假设你想通过一个进程将一些items推入一个List,并使用另一个不同的进程来实际处理这些items.这是常见的的生产者/消费者模式,可以通过以下简单的方式实现:</p>
+<ul>
+<li>推送items到List,生产者端调用<code>LPUSH</code>命令.</li>
+<li>从List中取出items,消费者端调用<code>RPOP</code>命令.</li>
+</ul>
+<p>然而,有些时候List可能是空的,没有什么东西需要处理,此时消费者端调用<code>RPOP</code>返回的结果就是NULL.在这种情况下,消费着需要被迫等待一段时间,然后用调用<code>RPOP</code>再次重试.这种方式称为<em>轮询</em>,虽然这是一种解决返回NULL的方式,但却不是最好的方式,,因为它有几个缺点:</p>
+<ol>
+<li>强制Redis和客户端处理无用的命令(当List为空时,所有的请求都不会完成预期的工作,它们只会返回NULL).</li>
+<li>给item的处理添加一个延迟,让消费者收到一个NULL后,让其等待一段时间.为了使延迟更小,我们可以在循环调用<code>RPOP</code>之间等待更少的时间,从而放大问题1,即对Redis产生更多无用的调用.</li>
+</ol>
+<p>因此,Redis实现了两个称为<code>BRPOP</code>和<code>BLPOP</code>的命令,在List为空的情况下,这两个命令分别是<code>RPOP</code>和<code>LPOP</code>的阻塞版本:只有在向List中添加新元素或达到用户指定的超时时间时,它们才会返回给调用者.<br>这是在消费者中使用的<code>BRPOP</code>调用的一个例子:</p>
+<pre><code>&gt; brpop tasks 5
+1) &quot;tasks&quot;
+2) &quot;do_something&quot;
+</code></pre><p>它的意思是:”等待<code>tasks</code>中的元素(<code>tasks</code>是List类型),但如果5秒后没有元素可用,则返回”.</p>
+<p>注意,你可以使用0作为超时时间,以永远等待List中出现元素,还可以指定多个List,以便同时等待多个列表,并在第一个List接收到元素时得到通知.</p>
+<p>关于<code>BRPOP</code>有几个事情需要注意:</p>
+<ol>
+<li>客户端以有序的方式获取元素:当元素A被其他客户端推入时,第一个阻塞等待List的客户端将先获取到元素A,以此类推.</li>
+<li>返回值与<code>RPOP</code>不同: 它是一个two-element数组,因为它还包含key的名称,因为<code>BRPOP</code>和<code>BLPOP</code>能够阻塞等待多个List中的元素.</li>
+<li>如果到达指定的超时时间List中还没有元素,则返回NULL.</li>
+</ol>
+<p>关于List和阻塞操作还有更多你需要知道的内容.建议阅读下面的内容:</p>
+<ul>
+<li>使用<code>LMOVE</code>可以构建更安全的队列或旋转队列.</li>
+<li>该命令还有一个称为<code>BLMOVE</code>的阻塞变体.</li>
+</ul>
+<h2 id="Automatic-creation-and-removal-of-keys"><a href="#Automatic-creation-and-removal-of-keys" class="headerlink" title="Automatic creation and removal of keys"></a>Automatic creation and removal of keys</h2><p>到目前为止,在我们的示例中,我们从来没有在推入元素之前创建空列表,或者在空列表内部不再有元素时删除空列表.Redis的责任是在列表为空时删除key,当我们正在使用<code>LPUSH</code>尝试向key中添加元素但key却不存在时创建一个空列表.<br>这不是特定于List,它适用于Redis中所有由多个元素组成数据类型——Streams, Sets, Sorted Sets和Hashes.<br>基本上，我们可以用三条规则来总结这种行为:</p>
+<ol>
+<li>当我们添加元素到聚合数据类型时,如果目标key不存在,则在添加元素之前会创建一个空的聚合数据类型.</li>
+<li>当我们从聚合数据类型中移除元素时,如果移除值之后该数据类型为空,则key被自动销毁.Stream数据类型是这一规则的唯一例外.</li>
+<li>Calling a read-only command such as <code>LLEN</code> (which returns the length of the list), or a write command removing elements,with an empty key,always produces the same result as if the key is holding an empty aggregate type of the type the command expects to find.</li>
+</ol>
+<p>规则1示例:</p>
+<pre><code>&gt; del mylist
+(integer) 1
+&gt; lpush mylist 1 2 3
+(integer) 3
+</code></pre><p>但是,如果key存在,我们不能对错误的类型执行操作:</p>
+<pre><code>&gt; set foo bar
+OK
+&gt; lpush foo 1 2 3
+(error) WRONGTYPE Operation against a key holding the wrong kind of value
+&gt; type foo
+string
+</code></pre><p>规则2示例:</p>
+<pre><code>&gt; lpush mylist 1 2 3
+(integer) 3
+&gt; exists mylist
+(integer) 1
+&gt; lpop mylist
+&quot;3&quot;
+&gt; lpop mylist
+&quot;2&quot;
+&gt; lpop mylist
+&quot;1&quot;
+&gt; exists mylist
+(integer) 0
+</code></pre><p>在弹出所有元素后,key不再存在.</p>
+<p>规则3示例:</p>
+<pre><code>&gt; del mylist
+(integer) 0
+&gt; llen mylist
+(integer) 0
+&gt; lpop mylist
+(nil)
+</code></pre><p><a name="hashes"></a></p>
+<h2 id="Redis-Hashes"><a href="#Redis-Hashes" class="headerlink" title="Redis Hashes"></a>Redis Hashes</h2><p>Redis Hashes看起来就像人们期望的”hash”一样,带有filed-value对:</p>
+<pre><code>&gt; hmset user:1000 username antirez birthyear 1977 verified 1
+OK
+&gt; hget user:1000 username
+&quot;antirez&quot;
+&gt; hget user:1000 birthyear
+&quot;1977&quot;
+&gt; hgetall user:1000
+1) &quot;username&quot;
+2) &quot;antirez&quot;
+3) &quot;birthyear&quot;
+4) &quot;1977&quot;
+5) &quot;verified&quot;
+6) &quot;1&quot;
+</code></pre><p>Hashes表示<em>objects</em>很方便,而且其实际上可以放入hash中的字段数量没有实际限制(除了可用内存之外),因此在应用程序中可以以多种不同的方式使用Hashes.</p>
+<p>命令<code>HMSET</code>可以为Hashes设置多个filed,<code>HGET</code>只可以检索单个filed.<code>HMGET</code>和<code>HGET</code>类似,但是返回的是一个数组值,因为其可以检索多个filed:</p>
+<pre><code>&gt; hmget user:1000 username birthyear no-such-field
+1) &quot;antirez&quot;
+2) &quot;1977&quot;
+3) (nil)
+</code></pre><p>还有一些命令能够对单个字段执行操作,比如<code>HINCRBY</code>:</p>
+<pre><code>&gt; hincrby user:1000 birthyear 10
+(integer) 1987
+&gt; hincrby user:1000 birthyear 10
+(integer) 1997
+</code></pre><p>你可以在文档中找到<a href="http://redis.io/commands#hash" target="_blank" rel="noopener">hash命令的完整列表</a>.<br>值得注意的是,小hash(即一些值很小的元素)在内存中以特殊的方式编码,这使得它们在内存中非常高效.</p>
+<p><a name="sets"></a></p>
+<h2 id="Redis-Sets"><a href="#Redis-Sets" class="headerlink" title="Redis Sets"></a>Redis Sets</h2><p>Redis Sets是无序且不重复的集合,其内部的数据都是以字符串的形式存在.<code>SADD</code>命令添加新元素到Set.还可以对集合执行许多其他操作,比如测试给定元素是否已经存在,在多个Set之间执行交集,并集或差集,等等.</p>
+<pre><code>&gt; sadd myset 1 2 3
+(integer) 3
+&gt; smembers myset
+1. 3
+2. 1
+3. 2
+</code></pre><p>这里,添加了三个元素到<code>myset</code>中,并且告诉Redis返回所有的元素.你可以看到返回的三个值是无序的.Redis可以在每次调用时随意以任何顺序返回元素,因为与用户没有关于元素顺序的约定.</p>
+<p>Redis还提供命令来测试某个元素是否在Set中.例如,测试元素是否存在:</p>
+<pre><code>&gt; sismember myset 3
+(integer) 1
+&gt; sismember myset 30
+(integer) 0
+</code></pre><p>“3”是<code>myset</code>的成员之一,但是”30”却不是.<br>Set有利于表示对象之间的关系.例如,我们可以很容易地使用Set来实现标签.<br>建模这个问题的简单方法是为每个我们想标记的对象设置一个Set.该Set包含与对象关联的标签的id.<br>一个例子是给新闻文章加标签.如果文章ID 1000被标记为标签1,2,5和77,那么Set可以将这些标签ID与新闻items关联起来:</p>
+<pre><code>&gt; sadd news:1000:tags 1 2 5 77 # id=1000的新闻有 1,2,5,77这四个标签
+(integer) 4
+</code></pre><p>我们可能还需要逆关系:用给定标签标记属于自己的新闻列表：</p>
+<pre><code>&gt; sadd tag:1:news 1000  # 标签1下有id=1000的新闻
+(integer) 1
+&gt; sadd tag:2:news 1000  # 标签2下有id=1000的新闻
+(integer) 1
+&gt; sadd tag:5:news 1000  # 标签5下有id=1000的新闻
+(integer) 1
+&gt; sadd tag:77:news 1000  # 标签77下有id=1000的新闻
+(integer) 1
+</code></pre><p>获取一个给定对象的所有标签是很简单:</p>
+<pre><code>&gt; smembers news:1000:tags
+1. 5
+2. 1
+3. 77
+4. 2
+</code></pre><p>注意:在这个示例中,假定你有其他数据结构,比如Redis Hashes,它将标签id映射到标签名称.<br>使用正确的Redis命令,仍然可以很容易地实现其他不平凡的操作.例如,我们可能需要一个标签为1,2,10和27的所有对象的列表.我们可以使用<code>SINTER</code>命令来完成这一任务,该命令执行不同Set之间的交集.比如:</p>
+<pre><code>&gt; sinter tag:1:news tag:2:news tag:10:news tag:27:news
+... results here ...
+</code></pre><p>除了交集之外,还可以执行并集,差集,提取随机元素等等.</p>
+<p>提取元素的命令称为<code>SPOP</code>,它便于对某些问题建模.例如,为了实现基于web的扑克游戏,你可以使用Set来表示你手中的牌.假设我们对(C)lubs, (D)iamonds, (H)earts, (S)pades使用一个字符的前缀:</p>
+<pre><code>&gt;  sadd deck C1 C2 C3 C4 C5 C6 C7 C8 C9 C10 CJ CQ CK
+   D1 D2 D3 D4 D5 D6 D7 D8 D9 D10 DJ DQ DK H1 H2 H3
+   H4 H5 H6 H7 H8 H9 H10 HJ HQ HK S1 S2 S3 S4 S5 S6
+   S7 S8 S9 S10 SJ SQ SK
+   (integer) 52
+</code></pre><p>现在我们想为每个玩家提供5张牌.<code>SPOP</code>命令随机移除一个元素返回到客户端,因此在本例中这是完美的操作.<br>然而,如果我们直接针对存储所有牌的Set调用这个命令,那么在游戏的下一回合中将需要再次对Set填充所有牌,这可能不是最理想的结果.首先,我们可以将存储在<code>deck</code> key中的Set复制到<code>game:1:deck</code> key中.<br>这是使用<code>SUNIONSTORE</code>完成的,它通常执行多个集合之间的联合,并将结果存储到另一个集合中.这里,由于Set的并集是自身,所以需要执行自我复制:</p>
+<pre><code>&gt; sunionstore game:1:deck deck
+(integer) 52
+</code></pre><p>现在准备向第一个玩家提供5张牌:</p>
+<pre><code>&gt; spop game:1:deck
+&quot;C6&quot;
+&gt; spop game:1:deck
+&quot;CQ&quot;
+&gt; spop game:1:deck
+&quot;D1&quot;
+&gt; spop game:1:deck
+&quot;CJ&quot;
+&gt; spop game:1:deck
+&quot;SJ&quot;
+</code></pre><p>One pair of jacks, not great…</p>
+<p>现在是介绍Set命令的好时机,该命令提供一个Set内的元素数量.在集合理论中,这通常被称为<em>集合的基数</em>,因此Redis命令被称为<code>SCARD</code>.</p>
+<pre><code>&gt; scard game:1:deck
+(integer) 47
+</code></pre><p>The math works: 52 - 5 = 47.</p>
+<p>当你只需要随机获取元素,但不想删除元素时,<code>SRANDMEMBER</code>命令就非常合适.它还具有返回重复和非重复元素的功能.</p>
+<p><a name="sorted-sets"></a></p>
+<h2 id="Redis-Sorted-sets"><a href="#Redis-Sorted-sets" class="headerlink" title="Redis Sorted sets"></a>Redis Sorted sets</h2><p>Sorted set是一种类似于Set和Hash的混合体数据类型.和Set一样,Sorted set由唯一的,不重复的字符串元素组成,因此在某种意义上,Sorted set也是Set.<br>然而,虽然Set内的元素不是有序的,但Sorted set中的每个元素都与一个浮点数关联,称为<em>score</em>(这就是为什么Sorted set类型也类似于Hash,因为每个元素都映射到一个值).<br>此外,Sorted set中的元素是<em>按顺序获取</em>的(它们不是按请求排序的,顺序是用于表示Sorted set数据结构的特性).它们是按照以下规则排序的:</p>
+<ul>
+<li>如果A和B两个元素有不同的score,如果A.score &gt; B.score,则A &gt; B.</li>
+<li>如果A和B两个元素有相同的score,如果A字符串的字典顺序大于B字符串,则A &gt; B.A和B字符串不能相等,因为Sorted set要求元素时唯一的.</li>
+</ul>
+<p>先从一个简单的示例开始,添加几个选定的黑客姓名作为Sorted set元素,并将他们的出生年份作为”score”.</p>
+<pre><code>&gt; zadd hackers 1940 &quot;Alan Kay&quot;
+(integer) 1
+&gt; zadd hackers 1957 &quot;Sophie Wilson&quot;
+(integer) 1
+&gt; zadd hackers 1953 &quot;Richard Stallman&quot;
+(integer) 1
+&gt; zadd hackers 1949 &quot;Anita Borg&quot;
+(integer) 1
+&gt; zadd hackers 1965 &quot;Yukihiro Matsumoto&quot;
+(integer) 1
+&gt; zadd hackers 1914 &quot;Hedy Lamarr&quot;
+(integer) 1
+&gt; zadd hackers 1916 &quot;Claude Shannon&quot;
+(integer) 1
+&gt; zadd hackers 1969 &quot;Linus Torvalds&quot;
+(integer) 1
+&gt; zadd hackers 1912 &quot;Alan Turing&quot;
+(integer) 1
+</code></pre><p>正如上面所看到的,<code>ZADD</code>与<code>SADD</code>类似,但是有一个额外的参数score(放在要添加的元素之前).<code>ZADD</code>的参数也是可变的,所以你可以自由地指定多个score-value对,虽然在上面的示例中没有使用它的这个特性.<br>对于Sorted set,返回一个按出生年份排序的黑客列表是很简单的,因为实际上<em>他们已经排好序了</em>.</p>
+<p>实现注意: Sorted set是通过一个包含skip list和hash table的双端数据结构实现的,所以每次添加一个元素,Redis执行的时间复杂度为O(log(N)).这很好,当我们需要排序元素时,Redis根本不需要做任何工作,因为其内部已经全部排好序了:</p>
+<pre><code>&gt; zrange hackers 0 -1
+1) &quot;Alan Turing&quot;
+2) &quot;Hedy Lamarr&quot;
+3) &quot;Claude Shannon&quot;
+4) &quot;Alan Kay&quot;
+5) &quot;Anita Borg&quot;
+6) &quot;Richard Stallman&quot;
+7) &quot;Sophie Wilson&quot;
+8) &quot;Yukihiro Matsumoto&quot;
+9) &quot;Linus Torvalds&quot;
+</code></pre><p>注意: 0和-1表示元素从索引0到最后一个元素(-1在这里的作用与在<code>LRANGE</code>命令中一样).</p>
+<p>如果我想让他们按相反的顺序,从最小到最大呢?使用<a href="/commands/zrevrange">ZREVRANGE</a>来替代<a href="/commands/zrange">ZRANGE</a>即可:</p>
+<pre><code>&gt; zrevrange hackers 0 -1
+1) &quot;Linus Torvalds&quot;
+2) &quot;Yukihiro Matsumoto&quot;
+3) &quot;Sophie Wilson&quot;
+4) &quot;Richard Stallman&quot;
+5) &quot;Anita Borg&quot;
+6) &quot;Alan Kay&quot;
+7) &quot;Claude Shannon&quot;
+8) &quot;Hedy Lamarr&quot;
+9) &quot;Alan Turing&quot;
+</code></pre><p>也可以使用<code>WITHSCORES</code>参数返回score：</p>
+<pre><code>&gt; zrange hackers 0 -1 withscores
+1) &quot;Alan Turing&quot;
+2) &quot;1912&quot;
+3) &quot;Hedy Lamarr&quot;
+4) &quot;1914&quot;
+5) &quot;Claude Shannon&quot;
+6) &quot;1916&quot;
+7) &quot;Alan Kay&quot;
+8) &quot;1940&quot;
+9) &quot;Anita Borg&quot;
+10) &quot;1949&quot;
+11) &quot;Richard Stallman&quot;
+12) &quot;1953&quot;
+13) &quot;Sophie Wilson&quot;
+14) &quot;1957&quot;
+15) &quot;Yukihiro Matsumoto&quot;
+16) &quot;1965&quot;
+17) &quot;Linus Torvalds&quot;
+18) &quot;1969&quot;
+</code></pre><h2 id="Operating-on-ranges"><a href="#Operating-on-ranges" class="headerlink" title="Operating on ranges"></a>Operating on ranges</h2><p>Sorted set比Set的功能更强大,因为前者有可以在范围内操作的功能.现在想把1950年之前出生的所有人都选出来.可以使用<code>ZRANGEBYSCORE</code>命令来实现:</p>
+<pre><code>&gt; zrangebyscore hackers -inf 1950
+1) &quot;Alan Turing&quot;
+2) &quot;Hedy Lamarr&quot;
+3) &quot;Claude Shannon&quot;
+4) &quot;Alan Kay&quot;
+5) &quot;Anita Borg&quot;
+</code></pre><p>我们要求Redis返回score在负无穷到1950之间的所有元素($[-\infty,1950]$).</p>
+<p>也可以删除范围内的元素.我们可以要求Sorted set删除所有$[1940,1950]$之间出生的黑客.</p>
+<pre><code>&gt; zremrangebyscore hackers 1940 1960
+(integer) 4
+</code></pre><p><code>ZREMRANGEBYSCORE</code>命令的名称也许不是最好的,但是它却是非常有用的,此命令返回移除元素的个数.<br>为Sorted set元素定义的另一种极其有用的操作是get-rank.可以查询一个元素在有序元素集合中的位置.</p>
+<pre><code>&gt; zrank hackers &quot;Anita Borg&quot;
+(integer) 4
+</code></pre><p>在元素按降序排序的情况下,<code>ZREVRANK</code>命令也是查询一个元素在有序元素集合中位置的方式.</p>
+<h2 id="Lexicographical-scores"><a href="#Lexicographical-scores" class="headerlink" title="Lexicographical scores"></a>Lexicographical scores</h2><p>在最新版本的Redis 2.8中,引入了一项新功能,该功能允许按字典顺序获取范围,假设插入Sorted set中的元素的score都是相同的(将元素用C语言中的<code>memcmp</code>函数进行比较,因此可以确保没有排序规则,并且每个Redis实例都会以相同的输出进行回复).<br>使用字典顺序范围进行操作的主要命令有<code>ZRANGEBYLEX</code>, <code>ZREVRANGEBYLEX</code>, <code>ZREMRANGEBYLEX</code>和<code>ZLEXCOUNT</code>.</p>
+<p>例如,让我们再次添加黑客列表,但这次所有元素的score都设置为0:</p>
+<pre><code>&gt; zadd hackers 0 &quot;Alan Kay&quot; 0 &quot;Sophie Wilson&quot; 0 &quot;Richard Stallman&quot; 0
+  &quot;Anita Borg&quot; 0 &quot;Yukihiro Matsumoto&quot; 0 &quot;Hedy Lamarr&quot; 0 &quot;Claude Shannon&quot;
+  0 &quot;Linus Torvalds&quot; 0 &quot;Alan Turing&quot;
+</code></pre><p>由于Sorted set的排序规则,它们已经按字典顺序排序:</p>
+<pre><code>&gt; zrange hackers 0 -1
+1) &quot;Alan Kay&quot;
+2) &quot;Alan Turing&quot;
+3) &quot;Anita Borg&quot;
+4) &quot;Claude Shannon&quot;
+5) &quot;Hedy Lamarr&quot;
+6) &quot;Linus Torvalds&quot;
+7) &quot;Richard Stallman&quot;
+8) &quot;Sophie Wilson&quot;
+9) &quot;Yukihiro Matsumoto&quot;
+</code></pre><p>使用<code>ZRANGEBYLEX</code>,我们可以查询字典排序范围:</p>
+<pre><code>&gt; zrangebylex hackers [B [P
+1) &quot;Claude Shannon&quot;
+2) &quot;Hedy Lamarr&quot;
+3) &quot;Linus Torvalds&quot;
+</code></pre><p>范围可以是包含的或排他的(取决于第一个字符),字符串正无穷大和负无穷大分别用<code>+</code>和<code>-</code>字符串指定.参阅文档来获取更多信息.<br>这个特性很重要,因为它允许我们使用Sorted set作为泛型索引.例如,要使用128位无符号整数作为参数来索引元素，则要做的就是将元素添加到具有相同score(比如0)但带有16字节前缀(<strong>由big endian的128位数字组成</strong>)的Sorted set中.由于big endian中的数字按字典顺序排序(按原始字节顺序)实际上也按数字顺序排序的,因此你可以请求128位空间中的范围,并丢弃前缀获得元素的值.<br>如果你想在更严格的演示中看到这个特性,请参阅<a href="http://autocomplete.redis.io" target="_blank" rel="noopener">Redis autocomplete demo</a>.</p>
+<h2 id="Updating-the-score-leader-boards"><a href="#Updating-the-score-leader-boards" class="headerlink" title="Updating the score: leader boards"></a>Updating the score: leader boards</h2><p>在切换到下一个数据类型之前,关于Sorted set的最后一个注意事项.Sorted set中的score可以在任何时候升级.只需要对已经包含在Sorted set中的元素调用<code>ZADD</code>就可以用O(log(N))的时间复杂度更新它的score(和位置).因此,Sorted set适用于有大量更新的情况.</p>
+<p>由于这一特点,一个常见的用例是排行榜.典型的应用程序是一个Facebook游戏,在这个游戏中,你可以将按分数对用户进行排序与获得排名的操作结合起来,以显示前N名的用户以及用户在排行榜中的排名(比如,”你是这里得分最高的第4932名”).</p>
+<p><a name="bitmaps"></a></p>
+<h2 id="Bitmaps"><a href="#Bitmaps" class="headerlink" title="Bitmaps"></a>Bitmaps</h2><p>Bitmap不是一种实际的数据类型,而是在字符串类型上定义的一组面向bit的操作. 因为字符串是 binary safe blobs,它们的最大长度是512 MB,所以它们适合设置$2^{32}$个不同的位.<br>Bit操作分成两组: 常量时间的bit操作,如将bit设置为1或0,或获取其值,以及对一组bit的操作,如计算给定bit范围内bit值被设置成1的数量(如总体计数).</p>
+<p>Bitmap的最大优点之一是,在存储信息时,它们通常可以极大地节省空间.例如,在一个用递增用户ID表示不同用户的系统中,仅使用512MB内存就可以记住40亿用户的单个bit信息(例如,知道用户是否想要接收时事通讯).</p>
+<p>使用<code>SETBIT</code>和<code>GETBIT</code>命令设置和检索Bit:</p>
+<pre><code>&gt; setbit key 10 1
+(integer) 1
+&gt; getbit key 10
+(integer) 1
+&gt; getbit key 11
+(integer) 0
+</code></pre><p><code>SETBIT</code>命令的第一个参数是bit编号,第二个参数是要设置bit的值,即1或0.如果寻址的bit编号超出当前字符串长度,该命令将自动扩容字符串.</p>
+<p><code>GETBIT</code>只返回指定索引处bit的值.超出范围的bit(寻址超出存储在目标key中的字符串长度的位)总是被认为是零.</p>
+<p>有三个命令对一组bit进行操作:</p>
+<ol>
+<li><code>BITOP</code> 在不同字符串之间执行逐位操作.提供的操作是AND, OR, XOR and NOT.</li>
+<li><code>BITCOUNT</code> 执行总体计数,报告设置为1的bit的数量.</li>
+<li><code>BITPOS</code> 查找指定值为0或1的第一个bit的索引.</li>
+</ol>
+<p><code>BITPOS</code>和<code>BITCOUNT</code>都能够操作字符串的字节范围内运行,而不是在整个字符串长度上运行.下面是一个<code>BITCOUNT</code> 调用的小例子:</p>
+<pre><code>&gt; setbit key 0 1
+(integer) 0
+&gt; setbit key 100 1
+(integer) 0
+&gt; bitcount key
+(integer) 2
+</code></pre><p>Bitmap常见的用例有:</p>
+<ul>
+<li>各种实时分析.</li>
+<li>存储与对象ID相关联的空间高效且高性能的布尔信息.</li>
+</ul>
+<p>例如,假设你想知道web站点用户每天访问的最长记录.你开始从零开始计算天数,也就是你的网站公开的那一天,并在每次用户访问网站时用<code>SETBIT</code>设置一个bit.作为位索引,你只需使用当前unix时间,减去初始偏移量,然后除以一天中的秒数(通常为3600*24).<br>这样,对于每个用户,你都有一个包含每天访问信息的小字符串.通过<code>BITCOUNT</code>可以很容易地获得给定用户访问web站点的天数,而通过<code>BITPOS</code>调用,或者简单地在客户端获取和分析Bitmap,就可以很容易地计算出最长的痕迹.</p>
+<p>Bitmaps are trivial to split into multiple keys, for example for the sake of sharding the data set and because in general it is better to avoid working with huge keys.</p>
+<p> To split a bitmap across different keys instead of setting all the bits into a key, a trivial strategy is just to store M bits per key and obtain the key name with <code>bit-number/M</code> and the Nth bit to address inside the key with <code>bit-number MOD M</code>.</p>
+<p>Bitmap很容易拆分成多个key,例如,为了分片数据集,因为通常最好避免使用大key.</p>
+<p><a name="hyperloglogs"></a></p>
+<h2 id="HyperLogLogs"><a href="#HyperLogLogs" class="headerlink" title="HyperLogLogs"></a>HyperLogLogs</h2><p>HyperLogLog是一种概率数据结构,用于对唯一事物进行计数(从技术上讲,它指的是估计集合的基数).<br>通常计数唯一item需要使用内存的总量和你想计数的item的数量成比例 ,因为你必须记住过去已经看到的元素,以避免多次计数它们.<br>但是,有一组算法可以交换内存以提高精度:你最终会得到带有标准误差的估计量,在Redis实现的情况下,该误差小于1％.</p>
+<p>这个算法的神奇之处在于,你不再需要使用与所计数的项目数量成比例的内存,而是可以使用常量数量的内存.<br>最坏的情况下是12k字节,如果你的HyperLogLog(我们从现在起就叫他们HLL)有非常少的元素,(所占用的内存)将会更少.</p>
+<p>HLLs in Redis, while technically a different data structure, are encoded<br>as a Redis string, so you can call <code>GET</code> to serialize a HLL, and <code>SET</code><br>to deserialize it back to the server.</p>
+<p>在Redis中的HLLs,虽然技术上是不同的数据结构,被编码为一个Redis字符串,所以你可以调用’ GET ‘来序列化一个HLL，和’ SET ‘来反序列化它回服务器。</p>
+<p>Conceptually the HLL API is like using Sets to do the same task. You would<br><code>SADD</code> every observed element into a set, and would use <code>SCARD</code> to check the<br>number of elements inside the set, which are unique since <code>SADD</code> will not<br>re-add an existing element.</p>
+<p>While you don’t really <em>add items</em> into an HLL, because the data structure<br>only contains a state that does not include actual elements, the API is the<br>same:</p>
+<ul>
+<li>Every time you see a new element, you add it to the count with <code>PFADD</code>.</li>
+<li><p>Every time you want to retrieve the current approximation of the unique elements <em>added</em> with <code>PFADD</code> so far, you use the <code>PFCOUNT</code>.</p>
+<pre><code>  &gt; pfadd hll a b c d
+  (integer) 1
+  &gt; pfcount hll
+  (integer) 4
+</code></pre></li>
+</ul>
+<p>An example of use case for this data structure is counting unique queries<br>performed by users in a search form every day.</p>
+<p>Redis is also able to perform the union of HLLs, please check the<br><a href="/commands#hyperloglog">full documentation</a> for more information.</p>
+<h2 id="Other-notable-features"><a href="#Other-notable-features" class="headerlink" title="Other notable features"></a>Other notable features</h2><p>There are other important things in the Redis API that can’t be explored<br>in the context of this document, but are worth your attention:</p>
+<ul>
+<li>It is possible to <a href="/commands/scan">iterate the key space of a large collection incrementally</a>.</li>
+<li>It is possible to run <a href="/commands/eval">Lua scripts server side</a> to improve latency and bandwidth.</li>
+<li>Redis is also a <a href="/topics/pubsub">Pub-Sub server</a>.</li>
+</ul>
+<h2 id="Learn-more"><a href="#Learn-more" class="headerlink" title="Learn more"></a>Learn more</h2><p>本教程并不完整,只介绍了API的基础知识.阅读<a href="/commands">command reference</a>可以了解更多信息.</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Redis/" rel="tag"># Redis</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/10/10/Redis/Topic/ProgrammingWithRedis/Expire/" rel="next" title="EXPIRE Key Seconds">
+                <i class="fa fa-chevron-left"></i> EXPIRE Key Seconds
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/10/13/Redis/Topic/ProgrammingWithRedis/LruCache/" rel="prev" title="Using Redis as an LRU cache">
+                Using Redis as an LRU cache <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/kejipigu.jpg" alt="纯阳子">
+            
+              <p class="site-author-name" itemprop="name">纯阳子</p>
+              <p class="site-description motion-element" itemprop="description">天还是很蓝的</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/chuhuilove" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-globe"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lovehui131125@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+  <script src="//cdn.bootcss.com/blueimp-md5/1.1.0/js/md5.min.js"></script>
+  <script>
+      var gitalk = new Gitalk({
+        clientID: '85ae836f21b451e3ae92',
+        clientSecret: 'dec7bfafa8aa5aaf17c7d8203a292cefe0cb86bd',
+        repo: 'BlogComments',
+        owner: 'chuhuilove',
+        admin: 'chuhuilove',
+        id: md5(location.pathname),
+        distractionFreeMode: 'true'
+      });
+      var div = document.createElement('div');
+      div.setAttribute("id", "gitalk_comments");
+      div.setAttribute("class", "post-nav");
+      var bro = document.getElementById('posts').getElementsByTagName('article');
+      bro = bro[0].getElementsByClassName('post-block');
+      bro = bro[0].getElementsByTagName('footer');
+      bro = bro[0];
+      bro.appendChild(div);
+      gitalk.render('gitalk_comments');
+  </script>
+
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-keys"><span class="nav-number">1.</span> <span class="nav-text">Redis keys</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-Strings"><span class="nav-number">2.</span> <span class="nav-text">Redis Strings</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Altering-and-querying-the-key-space"><span class="nav-number">3.</span> <span class="nav-text">Altering and querying the key space</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-expires-keys-with-limited-time-to-live"><span class="nav-number">4.</span> <span class="nav-text">Redis expires: keys with limited time to live</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-Lists"><span class="nav-number">5.</span> <span class="nav-text">Redis Lists</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#First-steps-with-Redis-Lists"><span class="nav-number">6.</span> <span class="nav-text">First steps with Redis Lists</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Common-use-cases-for-lists"><span class="nav-number">7.</span> <span class="nav-text">Common use cases for lists</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Capped-lists"><span class="nav-number">8.</span> <span class="nav-text">Capped lists</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Blocking-operations-on-lists"><span class="nav-number">9.</span> <span class="nav-text">Blocking operations on lists</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Automatic-creation-and-removal-of-keys"><span class="nav-number">10.</span> <span class="nav-text">Automatic creation and removal of keys</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-Hashes"><span class="nav-number">11.</span> <span class="nav-text">Redis Hashes</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-Sets"><span class="nav-number">12.</span> <span class="nav-text">Redis Sets</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-Sorted-sets"><span class="nav-number">13.</span> <span class="nav-text">Redis Sorted sets</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Operating-on-ranges"><span class="nav-number">14.</span> <span class="nav-text">Operating on ranges</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lexicographical-scores"><span class="nav-number">15.</span> <span class="nav-text">Lexicographical scores</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Updating-the-score-leader-boards"><span class="nav-number">16.</span> <span class="nav-text">Updating the score: leader boards</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bitmaps"><span class="nav-number">17.</span> <span class="nav-text">Bitmaps</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HyperLogLogs"><span class="nav-number">18.</span> <span class="nav-text">HyperLogLogs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Other-notable-features"><span class="nav-number">19.</span> <span class="nav-text">Other notable features</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Learn-more"><span class="nav-number">20.</span> <span class="nav-text">Learn more</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2019 &mdash; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">纯阳子</span>
+
+  
+</div>
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+-->
+
+
+<script>
+      var now = new Date();
+      function createtime() {
+          var grt= new Date("03/12/2019 12:00:00");//此处修改你的建站时间或者网站上线时间
+          now.setTime(now.getTime()+250);
+          days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days);
+          hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours);
+          if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+          mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;}
+          seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+          snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;}
+          document.getElementById("timeDate").innerHTML = "本站已安全运行 "+dnum+" 天 ";
+          document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒";
+      }
+  setInterval("createtime()",250);
+ </script>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
+
+

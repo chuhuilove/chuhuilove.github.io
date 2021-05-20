@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+
+<script type="text/javascript" color="262,46,104" opacity="0" zindex="1" count="500" src="https://cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+ <script>
+   (function(){
+          if(''){
+              if (prompt('请输入文章密码,默认为123456,这个弹窗不好,需要改一改') !== ''){
+                  alert('密码错误！');
+                  history.back();
+              }
+          }
+      })();
+  </script>
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Redis,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="How to configure and use Redis as a cache with a fixed amount of memory and auto eviction of keys.">
+<meta name="keywords" content="Redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Using Redis as an LRU cache">
+<meta property="og:url" content="http://yoursite.com/2020/10/13/Redis/Topic/ProgrammingWithRedis/LruCache/index.html">
+<meta property="og:site_name" content="cyzi&#39;s blog">
+<meta property="og:description" content="How to configure and use Redis as a cache with a fixed amount of memory and auto eviction of keys.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://redis.io/images/redisdoc/lru_comparison.png">
+<meta property="og:updated_time" content="2021-05-06T14:24:00.938Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Using Redis as an LRU cache">
+<meta name="twitter:description" content="How to configure and use Redis as a cache with a fixed amount of memory and auto eviction of keys.">
+<meta name="twitter:image" content="http://redis.io/images/redisdoc/lru_comparison.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/10/13/Redis/Topic/ProgrammingWithRedis/LruCache/">
+
+
+
+
+
+  <title>Using Redis as an LRU cache | cyzi's blog</title>
+  
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '',
+      xfbml      : true,
+      version    : 'v2.10'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/zh_Hans/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta custom-logo">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">cyzi's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">1+1=2</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/10/13/Redis/Topic/ProgrammingWithRedis/LruCache/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="纯阳子">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/kejipigu.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="cyzi's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Using Redis as an LRU cache</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-13T09:40:04+08:00">
+                2020-10-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index">
+                    <span itemprop="name">Redis</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  How to configure and use Redis as a cache with a fixed amount of memory and auto eviction of keys.
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>When Redis is used as a cache, often it is handy to let it automatically<br>evict old data as you add new data. This behavior is very well known in the<br>community of developers, since it is the default behavior of the popular<br><em>memcached</em> system.</p>
+<p>LRU is actually only one of the supported eviction methods. This page covers<br>the more general topic of the Redis <code>maxmemory</code> directive that is used in<br>order to limit the memory usage to a fixed amount, and it also covers in<br>depth the LRU algorithm used by Redis, that is actually an approximation of<br>the exact LRU.</p>
+<p>Starting with Redis version 4.0, a new LFU (Least Frequently Used) eviction<br>policy was introduced. This is covered in a separated section of this documentation.</p>
+<h2 id="Maxmemory-configuration-directive"><a href="#Maxmemory-configuration-directive" class="headerlink" title="Maxmemory configuration directive"></a>Maxmemory configuration directive</h2><p>The <code>maxmemory</code> configuration directive is used in order to configure Redis<br>to use a specified amount of memory for the data set. It is possible to<br>set the configuration directive using the <code>redis.conf</code> file, or later using<br>the <code>CONFIG SET</code> command at runtime.</p>
+<p>For example in order to configure a memory limit of 100 megabytes, the<br>following directive can be used inside the <code>redis.conf</code> file.</p>
+<pre><code>maxmemory 100mb
+</code></pre><p>Setting <code>maxmemory</code> to zero results into no memory limits. This is the<br>default behavior for 64 bit systems, while 32 bit systems use an implicit<br>memory limit of 3GB.</p>
+<p>When the specified amount of memory is reached, it is possible to select<br>among different behaviors, called <strong>policies</strong>.<br>Redis can just return errors for commands that could result in more memory<br>being used, or it can evict some old data in order to return back to the<br>specified limit every time new data is added.</p>
+<h2 id="Eviction-policies"><a href="#Eviction-policies" class="headerlink" title="Eviction policies"></a>Eviction policies</h2><p>The exact behavior Redis follows when the <code>maxmemory</code> limit is reached is<br>configured using the <code>maxmemory-policy</code> configuration directive.</p>
+<p>The following policies are available:</p>
+<ul>
+<li><strong>noeviction</strong>: return errors when the memory limit was reached and the client is trying to execute commands that could result in more memory to be used (most write commands, but <code>DEL</code> and a few more exceptions).</li>
+<li><strong>allkeys-lru</strong>: evict keys by trying to remove the less recently used (LRU) keys first, in order to make space for the new data added.</li>
+<li><strong>volatile-lru</strong>: evict keys by trying to remove the less recently used (LRU) keys first, but only among keys that have an <strong>expire set</strong>, in order to make space for the new data added.</li>
+<li><strong>allkeys-random</strong>: evict keys randomly in order to make space for the new data added.</li>
+<li><strong>volatile-random</strong>: evict keys randomly in order to make space for the new data added, but only evict keys with an <strong>expire set</strong>.</li>
+<li><strong>volatile-ttl</strong>: evict keys with an <strong>expire set</strong>, and try to evict keys with a shorter time to live (TTL) first, in order to make space for the new data added.</li>
+</ul>
+<p>The policies <strong>volatile-lru</strong>, <strong>volatile-random</strong> and <strong>volatile-ttl</strong> behave like <strong>noeviction</strong> if there are no keys to evict matching the prerequisites.</p>
+<p>Picking the right eviction policy is important depending on the access pattern<br>of your application, however you can reconfigure the policy at runtime while<br>the application is running, and monitor the number of cache misses and hits<br>using the Redis <code>INFO</code> output in order to tune your setup.</p>
+<p>In general as a rule of thumb:</p>
+<ul>
+<li>Use the <strong>allkeys-lru</strong> policy when you expect a power-law distribution in the popularity of your requests, that is, you expect that a subset of elements will be accessed far more often than the rest. <strong>This is a good pick if you are unsure</strong>.</li>
+<li>Use the <strong>allkeys-random</strong> if you have a cyclic access where all the keys are scanned continuously, or when you expect the distribution to be uniform (all elements likely accessed with the same probability).</li>
+<li>Use the <strong>volatile-ttl</strong> if you want to be able to provide hints to Redis about what are good candidate for expiration by using different TTL values when you create your cache objects.</li>
+</ul>
+<p>The <strong>volatile-lru</strong> and <strong>volatile-random</strong> policies are mainly useful when you want to use a single instance for both caching and to have a set of persistent keys. However it is usually a better idea to run two Redis instances to solve such a problem.</p>
+<p>It is also worth noting that setting an expire to a key costs memory, so using a policy like <strong>allkeys-lru</strong> is more memory efficient since there is no need to set an expire for the key to be evicted under memory pressure.</p>
+<h2 id="How-the-eviction-process-works"><a href="#How-the-eviction-process-works" class="headerlink" title="How the eviction process works"></a>How the eviction process works</h2><p>It is important to understand that the eviction process works like this:</p>
+<ul>
+<li>A client runs a new command, resulting in more data added.</li>
+<li>Redis checks the memory usage, and if it is greater than the <code>maxmemory</code> limit , it evicts keys according to the policy.</li>
+<li>A new command is executed, and so forth.</li>
+</ul>
+<p>So we continuously cross the boundaries of the memory limit, by going over it, and then by evicting keys to return back under the limits.</p>
+<p>If a command results in a lot of memory being used (like a big set intersection stored into a new key) for some time the memory limit can be surpassed by a noticeable amount.</p>
+<h2 id="Approximated-LRU-algorithm"><a href="#Approximated-LRU-algorithm" class="headerlink" title="Approximated LRU algorithm"></a>Approximated LRU algorithm</h2><p>Redis LRU algorithm is not an exact implementation. This means that Redis is<br>not able to pick the <em>best candidate</em> for eviction, that is, the access that<br>was accessed the most in the past. Instead it will try to run an approximation<br>of the LRU algorithm, by sampling a small number of keys, and evicting the<br>one that is the best (with the oldest access time) among the sampled keys.</p>
+<p>However since Redis 3.0 the algorithm was improved to also take a pool of good<br>candidates for eviction. This improved the performance of the algorithm, making<br>it able to approximate more closely the behavior of a real LRU algorithm.</p>
+<p>What is important about the Redis LRU algorithm is that you <strong>are able to tune</strong> the precision of the algorithm by changing the number of samples to check for every eviction. This parameter is controlled by the following configuration directive:</p>
+<pre><code>maxmemory-samples 5
+</code></pre><p>The reason why Redis does not use a true LRU implementation is because it<br>costs more memory. However the approximation is virtually equivalent for the<br>application using Redis. The following is a graphical comparison of how<br>the LRU approximation used by Redis compares with true LRU.</p>
+<p><img src="http://redis.io/images/redisdoc/lru_comparison.png" alt="LRU comparison"></p>
+<p>The test to generate the above graphs filled a Redis server with a given number of keys. The keys were accessed from the first to the last, so that the first keys are the best candidates for eviction using an LRU algorithm. Later more 50% of keys are added, in order to force half of the old keys to be evicted.</p>
+<p>You can see three kind of dots in the graphs, forming three distinct bands.</p>
+<ul>
+<li>The light gray band are objects that were evicted.</li>
+<li>The gray band are objects that were not evicted.</li>
+<li>The green band are objects that were added.</li>
+</ul>
+<p>In a theoretical LRU implementation we expect that, among the old keys, the first half will be expired. The Redis LRU algorithm will instead only <em>probabilistically</em> expire the older keys.</p>
+<p>As you can see Redis 3.0 does a better job with 5 samples compared to Redis 2.8, however most objects that are among the latest accessed are still retained by Redis 2.8. Using a sample size of 10 in Redis 3.0 the approximation is very close to the theoretical performance of Redis 3.0.</p>
+<p>Note that LRU is just a model to predict how likely a given key will be accessed in the future. Moreover, if your data access pattern closely<br>resembles the power law, most of the accesses will be in the set of keys that<br>the LRU approximated algorithm will be able to handle well.</p>
+<p>In simulations we found that using a power law access pattern, the difference between true LRU and Redis approximation were minimal or non-existent.</p>
+<p>However you can raise the sample size to 10 at the cost of some additional CPU<br>usage in order to closely approximate true LRU, and check if this makes a<br>difference in your cache misses rate.</p>
+<p>To experiment in production with different values for the sample size by using<br>the <code>CONFIG SET maxmemory-samples &lt;count&gt;</code> command, is very simple.</p>
+<h2 id="The-new-LFU-mode"><a href="#The-new-LFU-mode" class="headerlink" title="The new LFU mode"></a>The new LFU mode</h2><p>Starting with Redis 4.0, a new <a href="http://antirez.com/news/109" target="_blank" rel="noopener">Least Frequently Used eviction mode</a> is available. This mode may work better (provide a better<br>hits/misses ratio) in certain cases, since using LFU Redis will try to track<br>the frequency of access of items, so that the ones used rarely are evicted while<br>the one used often have an higher chance of remaining in memory.</p>
+<p>If you think at LRU, an item that was recently accessed but is actually almost never requested, will not get expired, so the risk is to evict a key that has an higher chance to be requested in the future. LFU does not have this problem, and in general should adapt better to different access patterns.</p>
+<p>To configure the LFU mode, the following policies are available:</p>
+<ul>
+<li><code>volatile-lfu</code> Evict using approximated LFU among the keys with an expire set.</li>
+<li><code>allkeys-lfu</code> Evict any key using approximated LFU.</li>
+</ul>
+<p>LFU is approximated like LRU: it uses a probabilistic counter, called a <a href="https://en.wikipedia.org/wiki/Approximate_counting_algorithm" target="_blank" rel="noopener">Morris counter</a> in order to estimate the object access frequency using just a few bits per object, combined with a decay period so that the counter is reduced over time: at some point we no longer want to consider keys as frequently accessed, even if they were in the past, so that the algorithm can adapt to a shift in the access pattern.</p>
+<p>Those informations are sampled similarly to what happens for LRU (as explained in the previous section of this documentation) in order to select a candidate for eviction.</p>
+<p>However unlike LRU, LFU has certain tunable parameters: for instance, how fast<br>should a frequent item lower in rank if it gets no longer accessed? It is also possible to tune the Morris counters range in order to better adapt the algorithm to specific use cases.</p>
+<p>By default Redis 4.0 is configured to:</p>
+<ul>
+<li>Saturate the counter at, around, one million requests.</li>
+<li>Decay the counter every one minute.</li>
+</ul>
+<p>Those should be reasonable values and were tested experimental, but the user may want to play with these configuration settings in order to pick optimal values.</p>
+<p>Instructions about how to tune these parameters can be found inside the example <code>redis.conf</code> file in the source distribution, but briefly, they are:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lfu-log-factor 10</span><br><span class="line">lfu-decay-time 1</span><br></pre></td></tr></table></figure>
+<p>The decay time is the obvious one, it is the amount of minutes a counter should be decayed, when sampled and found to be older than that value. A special value of <code>0</code> means: always decay the counter every time is scanned, and is rarely useful.</p>
+<p>The counter <em>logarithm factor</em> changes how many hits are needed in order to saturate the frequency counter, which is just in the range 0-255. The higher the factor, the more accesses are needed in order to reach the maximum. The lower the factor, the better is the resolution of the counter for low accesses, according to the following table:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">+--------+------------+------------+------------+------------+------------+</span><br><span class="line">| factor | 100 hits   | 1000 hits  | 100K hits  | 1M hits    | 10M hits   |</span><br><span class="line">+--------+------------+------------+------------+------------+------------+</span><br><span class="line">| 0      | 104        | 255        | 255        | 255        | 255        |</span><br><span class="line">+--------+------------+------------+------------+------------+------------+</span><br><span class="line">| 1      | 18         | 49         | 255        | 255        | 255        |</span><br><span class="line">+--------+------------+------------+------------+------------+------------+</span><br><span class="line">| 10     | 10         | 18         | 142        | 255        | 255        |</span><br><span class="line">+--------+------------+------------+------------+------------+------------+</span><br><span class="line">| 100    | 8          | 11         | 49         | 143        | 255        |</span><br><span class="line">+--------+------------+------------+------------+------------+------------+</span><br></pre></td></tr></table></figure>
+<p>So basically the factor is a trade off between better distinguishing items with low accesses VS distinguishing items with high accesses. More informations are available in the example <code>redis.conf</code> file self documenting comments.</p>
+<p>Since LFU is a new feature, we’ll appreciate any feedback about how it performs in your use case compared to LRU.</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Redis/" rel="tag"># Redis</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/10/11/Redis/Topic/Tutorials&FAQ/DataTypesIntro/" rel="next" title="An introduction to Redis data types and abstractions">
+                <i class="fa fa-chevron-left"></i> An introduction to Redis data types and abstractions
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/05/06/SoftwareModeling&Design/Chapter2UML/" rel="prev" title="chapter2 UML表示法概述">
+                chapter2 UML表示法概述 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/kejipigu.jpg" alt="纯阳子">
+            
+              <p class="site-author-name" itemprop="name">纯阳子</p>
+              <p class="site-description motion-element" itemprop="description">天还是很蓝的</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/chuhuilove" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-globe"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lovehui131125@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+  <script src="//cdn.bootcss.com/blueimp-md5/1.1.0/js/md5.min.js"></script>
+  <script>
+      var gitalk = new Gitalk({
+        clientID: '85ae836f21b451e3ae92',
+        clientSecret: 'dec7bfafa8aa5aaf17c7d8203a292cefe0cb86bd',
+        repo: 'BlogComments',
+        owner: 'chuhuilove',
+        admin: 'chuhuilove',
+        id: md5(location.pathname),
+        distractionFreeMode: 'true'
+      });
+      var div = document.createElement('div');
+      div.setAttribute("id", "gitalk_comments");
+      div.setAttribute("class", "post-nav");
+      var bro = document.getElementById('posts').getElementsByTagName('article');
+      bro = bro[0].getElementsByClassName('post-block');
+      bro = bro[0].getElementsByTagName('footer');
+      bro = bro[0];
+      bro.appendChild(div);
+      gitalk.render('gitalk_comments');
+  </script>
+
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Maxmemory-configuration-directive"><span class="nav-number">1.</span> <span class="nav-text">Maxmemory configuration directive</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Eviction-policies"><span class="nav-number">2.</span> <span class="nav-text">Eviction policies</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-the-eviction-process-works"><span class="nav-number">3.</span> <span class="nav-text">How the eviction process works</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Approximated-LRU-algorithm"><span class="nav-number">4.</span> <span class="nav-text">Approximated LRU algorithm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-new-LFU-mode"><span class="nav-number">5.</span> <span class="nav-text">The new LFU mode</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2019 &mdash; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">纯阳子</span>
+
+  
+</div>
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+-->
+
+
+<script>
+      var now = new Date();
+      function createtime() {
+          var grt= new Date("03/12/2019 12:00:00");//此处修改你的建站时间或者网站上线时间
+          now.setTime(now.getTime()+250);
+          days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days);
+          hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours);
+          if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+          mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;}
+          seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+          snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;}
+          document.getElementById("timeDate").innerHTML = "本站已安全运行 "+dnum+" 天 ";
+          document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒";
+      }
+  setInterval("createtime()",250);
+ </script>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
+
+

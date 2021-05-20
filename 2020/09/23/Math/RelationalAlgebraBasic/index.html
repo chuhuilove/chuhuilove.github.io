@@ -80,7 +80,7 @@
 
 
 
-  <meta name="keywords" content="DataBase,Math,">
+  <meta name="keywords" content="Math,DataBase,">
 
 
 
@@ -91,18 +91,18 @@
 
 
 
-<meta name="description" content="数据库技术数学基础--关系代数">
-<meta name="keywords" content="DataBase,Math">
+<meta name="description" content="据说,学会关系代数,就没有不会写的SQL语句">
+<meta name="keywords" content="Math,DataBase">
 <meta property="og:type" content="article">
-<meta property="og:title" content="关系代数基础">
+<meta property="og:title" content="关系代数">
 <meta property="og:url" content="http://yoursite.com/2020/09/23/Math/RelationalAlgebraBasic/index.html">
 <meta property="og:site_name" content="cyzi&#39;s blog">
-<meta property="og:description" content="数据库技术数学基础--关系代数">
+<meta property="og:description" content="据说,学会关系代数,就没有不会写的SQL语句">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-09-24T14:32:59.631Z">
+<meta property="og:updated_time" content="2021-05-06T13:40:36.648Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="关系代数基础">
-<meta name="twitter:description" content="数据库技术数学基础--关系代数">
+<meta name="twitter:title" content="关系代数">
+<meta name="twitter:description" content="据说,学会关系代数,就没有不会写的SQL语句">
 
 
 
@@ -138,7 +138,7 @@
 
 
 
-  <title>关系代数基础 | cyzi's blog</title>
+  <title>关系代数 | cyzi's blog</title>
   
 <script>
   window.fbAsyncInit = function() {
@@ -309,7 +309,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">关系代数基础</h1>
+          <h1 class="post-title" itemprop="name headline">关系代数</h1>
         
 
         <div class="post-meta">
@@ -368,7 +368,7 @@
 
           
               <div class="post-description">
-                  数据库技术数学基础--关系代数
+                  据说,学会关系代数,就没有不会写的SQL语句
               </div>
           
 
@@ -385,8 +385,9 @@
       
 
       
-        <h2 id="关系代数运算符"><a href="#关系代数运算符" class="headerlink" title="关系代数运算符"></a>关系代数运算符</h2><p>关系代数运算符分为4类:集合运算符,专门的关系运算符,算术比较符和逻辑运算符.<br>根据运算符的不同,关系代数运算可分为传统的集合运算和专门的关系运算.传统的集合运算是从关系的水平方向进行的,包括<strong style="color:DarkViolet ">并($\cup$)</strong>,<strong style="color:DarkViolet ">交($\cap$)</strong>,<strong style="color:DarkViolet ">差($-$)</strong>和<strong style="color:DarkViolet ">笛卡尔积($\times$)</strong>.<br>专门的关系运算既可以从关系的水平方向进行运算,又可以向关系的垂直方向运算,包括<strong style="color:blue">选择($\sigma$$)</strong>,<strong style="color:blue">投影($\pi$)</strong>,<strong style="color:blue">连接($\Join$)</strong>和<strong style="color:blue">除法($\div$)</strong>.</p>
+        <h2 id="关系代数运算符"><a href="#关系代数运算符" class="headerlink" title="关系代数运算符"></a>关系代数运算符</h2><p>关系代数运算符分为4类:集合运算符,专门的关系运算符,算术比较符和逻辑运算符.<br>根据运算符的不同,关系代数运算可分为传统的集合运算和专门的关系运算.传统的集合运算是从关系的水平方向进行的,包括<strong class="traditionSetOper">并($\cup$)</strong>,<strong class="traditionSetOper">交($\cap$)</strong>,<strong class="traditionSetOper">差($-$)</strong>和<strong class="traditionSetOper">笛卡尔积($\times$)</strong>.<br>专门的关系运算既可以从关系的水平方向进行运算,又可以向关系的垂直方向运算,包括<strong style="color:blue">选择($\sigma$)</strong>,<strong style="color:blue">投影($\pi$)</strong>,<strong style="color:blue">连接($\Join$)</strong>和<strong style="color:blue">除法($\div$)</strong>.</p>
 <table>
+<caption style="text-align:center">1. 关系代数运算符</caption>
     <tr>
         <th>类别</th>
         <th>运算符</th>
@@ -1050,6 +1051,120 @@ A\times B= \{ (a,b)|a\in A \land b\in B  \}</script></blockquote>
 <h2 id="扩展的关系代数运算"><a href="#扩展的关系代数运算" class="headerlink" title="扩展的关系代数运算"></a>扩展的关系代数运算</h2><h3 id="Ⅰ-交-Intersection"><a href="#Ⅰ-交-Intersection" class="headerlink" title="Ⅰ 交(Intersection)"></a>Ⅰ 交(Intersection)</h3><p>关系$R$与$S$具有相同的关系模式,关系$R$与$S$的交<strong style="color:red">是由属于$R$同时又属于$S$的元组构成的集合</strong>,记作$R\cap S$,其形式定义如下:</p>
 <script type="math/tex; mode=display">
 R \cap S = \{t|t \in R \land t \in S \}</script><p>显然,$R \cap S = R-(R-S)$,或者$R \cap S = S-(S-R)$</p>
+<h4 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h4><p>假设有两个关系$R$和$S$,求$R\cap S$,关系定义如下:</p>
+<table>
+    <caption><strong align="center">$R$</strong></caption>
+    <tr>
+        <th>NO.</th>
+        <th>A</th>
+        <th>B</th>
+        <th>C</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>$a_{1}$</td>
+        <td>$b_{1}$</td>
+        <td>$c_{1}$</td>
+    </tr>
+    <tr>
+        <td class="RJiaoS_2">2</td>
+        <td class="RJiaoS_2">$a_{1}$</td>
+        <td class="RJiaoS_2">$b_{2}$</td>
+        <td class="RJiaoS_2">$c_{2}$</td>
+    </tr>
+    <tr>
+        <td class="RJiaoS_1">3</td>
+        <td class="RJiaoS_1">$a_{2}$</td>
+        <td class="RJiaoS_1">$b_{2}$</td>
+        <td class="RJiaoS_1">$c_{1}$</td>
+    </tr>
+</table>
+
+<table>
+    <caption><strong align="center">$S$</strong></caption>
+    <tr>
+        <th>NO.</th>
+        <th>A</th>
+        <th>B</th>
+        <th>C</th>
+    </tr>
+    <tr>
+        <td class="RJiaoS_2">1</td>
+        <td class="RJiaoS_2">$a_{1}$</td>
+        <td class="RJiaoS_2">$b_{2}$</td>
+        <td class="RJiaoS_2">$c_{2}$</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>$a_{1}$</td>
+        <td>$b_{3}$</td>
+        <td>$c_{2}$</td>
+    </tr>
+    <tr>
+        <td class="RJiaoS_1">3</td>
+        <td class="RJiaoS_1">$a_{2}$</td>
+        <td class="RJiaoS_1">$b_{2}$</td>
+        <td class="RJiaoS_1">$c_{1}$</td>
+    </tr>
+</table>
+
+<p>上面两个关系,根据$R\cap S$的定义,可以很容易的找出属于R又属于S的元组是$R$.2和$S$.1,$R$.3和$S$.3.故:$R\cap S$的结果是:</p>
+<table>
+    <caption><strong align="center">$R\cap S$</strong></caption>
+    <tr>
+        <th>A</th>
+        <th>B</th>
+        <th>C</th>
+    </tr>
+    <tr>
+        <td>$a_{1}$</td>
+        <td>$b_{2}$</td>
+        <td>$c_{2}$</td>
+    </tr>
+    <tr>
+        <td>$a_{2}$</td>
+        <td>$b_{2}$</td>
+        <td>$c_{1}$</td>
+    </tr>
+</table>
+
+<p>现在讨论一下$R\cap S$的推演关系,由于$R\cap S=R-(R-S)$,所以,我们可以先推演出$R-S$,<strong class="traditionSetOper">差</strong>运算的定义是属于$R$但是不属于$S$的元组的集合,得到如下结果:</p>
+<table>
+    <caption><strong align="center">$R-S$</strong></caption>
+    <tr>
+        <th>NO.</th>
+        <th>A</th>
+        <th>B</th>
+        <th>C</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>$a_{1}$</td>
+        <td>$b_{1}$</td>
+        <td>$c_{1}$</td>
+    </tr>
+</table>
+
+<p>现在运算$R$和$R-S$的<strong class="traditionSetOper">差</strong>,得到结果:</p>
+<table>
+    <caption><strong align="center">$R\cap S=R-(R-S)$</strong></caption>
+    <tr>
+        <th>A</th>
+        <th>B</th>
+        <th>C</th>
+    </tr>
+    <tr>
+        <td>$a_{1}$</td>
+        <td>$b_{2}$</td>
+        <td>$c_{2}$</td>
+    </tr>
+    <tr>
+        <td>$a_{2}$</td>
+        <td>$b_{2}$</td>
+        <td>$c_{1}$</td>
+    </tr>
+</table>
+
 <h3 id="Ⅱ-连接-Join"><a href="#Ⅱ-连接-Join" class="headerlink" title="Ⅱ 连接(Join)"></a>Ⅱ 连接(Join)</h3><p>连接分为$\theta$连接,等值连接和自然连接3种.连接运算是<strong style="color:Turquoise">从两个关系$R$和$S$的笛卡尔积中选取满足条件的元组</strong>.因此,可以认为笛卡尔积是无条件连接,其他连接操作认为是有条件连接.</p>
 <h4 id="theta-连接"><a href="#theta-连接" class="headerlink" title="$\theta$连接"></a>$\theta$连接</h4><p>从R与S的笛卡尔积中选取属性件满足一定条件的元组.记作:</p>
 <script type="math/tex; mode=display">
@@ -1068,15 +1183,519 @@ R \Join S=\{ t|t=\lt \!t^{n},t^{m^{*}} \!\gt \land t^n \in R \land t^m \in S \la
 <script type="math/tex; mode=display">
 R\Join S = \Pi_{A_{1},A_{2},\cdots,A_{n-k},R.B_{1},R.B_{2},\cdots,R.B_{K},B_{K+1},B_{K+2},\cdots,B_{m}}
 (\sigma_{R.B_{1} = S.B_{1} \land R.B_{2} = S.B_{2} \land \cdots \land  R.B_{k} = S.B_{k}}(R\times S))</script><p>一般连接是从关系的水平方向运算,而自然连接不仅要从关系的水平方向运算,而且要从方向的垂直方向运算.因为自然连接要去掉重复属性,如果没有重复属性,那么自然连接就转化为笛卡尔积.</p>
+<h4 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h4><p>假设有两个关系$R$和$S$,求$R \mathop{\mathbb{\Join}}\limits_{C\lt E} S$,$R \mathop{\mathbb{\Join}}\limits_{R.B=S.B} S$,$R\Join S$,关系定义如下:</p>
+<table>
+    <caption><strong align="center">$R$</strong></caption>
+    <tr>
+        <th>NO.</th>
+        <th>A</th>
+        <th>B</th>
+        <th>C</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>$a_{1}$</td>
+        <td>$b_{1}$</td>
+        <td>5</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>$a_{2}$</td>
+        <td>$b_{2}$</td>
+        <td>6</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>$a_{2}$</td>
+        <td>$b_{3}$</td>
+        <td>8</td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>$a_{2}$</td>
+        <td>$b_{4}$</td>
+        <td>12</td>
+    </tr>
+</table>
+
+<table>
+    <caption><strong align="center">$S$</strong></caption>
+    <tr>
+        <th>NO.</th>
+        <th>B</th>
+        <th>E</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>$b_{1}$</td>
+        <td>3</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>$b_{2}$</td>
+        <td>7</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>$b_{3}$</td>
+        <td>10</td>
+    </tr>
+    <tr>
+    </tr><tr>
+        <td>4</td>
+        <td>$b_{3}$</td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td>5</td>
+        <td>$b_{5}$</td>
+        <td>2</td>
+    </tr>
+</table>
+
+<p>先求出笛卡尔积$R\times S$:</p>
+<table>
+    <caption><strong align="center">$R\times S$</strong></caption>
+    <tr>
+        <th>R.NO.</th>
+        <th>R.A</th>
+        <th>R.B</th>
+        <th>R.C</th>
+        <th>S.NO.</th>
+        <th>S.B</th>
+        <th>S.E</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>$a_{1}$</td>
+        <td>$b_{1}$</td>
+        <td>5</td>
+        <td>1</td>
+        <td>$b_{1}$</td>
+        <td>3</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>$a_{1}$</td>
+        <td>$b_{1}$</td>
+        <td>5</td>
+        <td>2</td>
+        <td>$b_{2}$</td>
+        <td>7</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>$a_{1}$</td>
+        <td>$b_{1}$</td>
+        <td>5</td>
+        <td>3</td>
+        <td>$b_{3}$</td>
+        <td>10</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>$a_{1}$</td>
+        <td>$b_{1}$</td>
+        <td>5</td>
+        <td>4</td>
+        <td>$b_{3}$</td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>$a_{1}$</td>
+        <td>$b_{1}$</td>
+        <td>5</td>
+        <td>5</td>
+        <td>$b_{5}$</td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>$a_{1}$</td>
+        <td>$b_{2}$</td>
+        <td>6</td>
+        <td>1</td>
+        <td>$b_{1}$</td>
+        <td>3</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>$a_{1}$</td>
+        <td>$b_{2}$</td>
+        <td>6</td>
+        <td>2</td>
+        <td>$b_{2}$</td>
+        <td>7</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>$a_{1}$</td>
+        <td>$b_{2}$</td>
+        <td>6</td>
+        <td>3</td>
+        <td>$b_{3}$</td>
+        <td>10</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>$a_{1}$</td>
+        <td>$b_{2}$</td>
+        <td>6</td>
+        <td>4</td>
+        <td>$b_{3}$</td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>$a_{1}$</td>
+        <td>$b_{2}$</td>
+        <td>6</td>
+        <td>5</td>
+        <td>$b_{5}$</td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>$a_{2}$</td>
+        <td>$b_{3}$</td>
+        <td>8</td>
+        <td>1</td>
+        <td>$b_{1}$</td>
+        <td>3</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>$a_{2}$</td>
+        <td>$b_{3}$</td>
+        <td>8</td>
+        <td>2</td>
+        <td>$b_{2}$</td>
+        <td>7</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>$a_{2}$</td>
+        <td>$b_{3}$</td>
+        <td>8</td>
+        <td>3</td>
+        <td>$b_{3}$</td>
+        <td>10</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>$a_{2}$</td>
+        <td>$b_{3}$</td>
+        <td>8</td>
+        <td>4</td>
+        <td>$b_{3}$</td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>$a_{2}$</td>
+        <td>$b_{3}$</td>
+        <td>8</td>
+        <td>5</td>
+        <td>$b_{5}$</td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>$a_{2}$</td>
+        <td>$b_{4}$</td>
+        <td>12</td>
+        <td>1</td>
+        <td>$b_{1}$</td>
+        <td>3</td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>$a_{2}$</td>
+        <td>$b_{4}$</td>
+        <td>12</td>
+        <td>2</td>
+        <td>$b_{2}$</td>
+        <td>7</td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>$a_{2}$</td>
+        <td>$b_{4}$</td>
+        <td>12</td>
+        <td>3</td>
+        <td>$b_{3}$</td>
+        <td>10</td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>$a_{2}$</td>
+        <td>$b_{4}$</td>
+        <td>12</td>
+        <td>4</td>
+        <td>$b_{3}$</td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>$a_{2}$</td>
+        <td>$b_{4}$</td>
+        <td>12</td>
+        <td>5</td>
+        <td>$b_{5}$</td>
+        <td>2</td>
+    </tr>
+</table>
+
+<p>筛选出$R.C\lt R.E$后的结果,即$R \mathop{\mathbb{\Join}}\limits_{C\lt E} S$的结果:</p>
+<table>
+    <caption><strong align="center">$R \mathop{\mathbb{\Join}}\limits_{C\lt E} S$</strong></caption>
+    <tr>
+        <th>R.NO.</th>
+        <th>R.A</th>
+        <th>R.B</th>
+        <th>R.C</th>
+        <th>S.NO.</th>
+        <th>S.B</th>
+        <th>S.E</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>$a_{1}$</td>
+        <td>$b_{1}$</td>
+        <td>5</td>
+        <td>2</td>
+        <td>$b_{2}$</td>
+        <td>7</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>$a_{1}$</td>
+        <td>$b_{1}$</td>
+        <td>5</td>
+        <td>3</td>
+        <td>$b_{3}$</td>
+        <td>10</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>$a_{1}$</td>
+        <td>$b_{2}$</td>
+        <td>6</td>
+        <td>2</td>
+        <td>$b_{2}$</td>
+        <td>7</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>$a_{1}$</td>
+        <td>$b_{2}$</td>
+        <td>6</td>
+        <td>3</td>
+        <td>$b_{3}$</td>
+        <td>10</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>$a_{2}$</td>
+        <td>$b_{3}$</td>
+        <td>8</td>
+        <td>3</td>
+        <td>$b_{3}$</td>
+        <td>10</td>
+    </tr>
+</table>
+
+
+<p>筛选出$R.B=S.B$后的结果,即$R \mathop{\mathbb{\Join}}\limits_{R.B=S.B} S$的结果:</p>
+<table>
+    <caption><strong align="center">$R \mathop{\mathbb{\Join}}\limits_{R.B=S.B} S$</strong></caption>
+    <tr>
+        <th>R.NO.</th>
+        <th>R.A</th>
+        <th>R.B</th>
+        <th>R.C</th>
+        <th>S.NO.</th>
+        <th>S.B</th>
+        <th>S.E</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>$a_{1}$</td>
+        <td>$b_{1}$</td>
+        <td>5</td>
+        <td>1</td>
+        <td>$b_{1}$</td>
+        <td>3</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>$a_{1}$</td>
+        <td>$b_{2}$</td>
+        <td>6</td>
+        <td>2</td>
+        <td>$b_{2}$</td>
+        <td>7</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>$a_{2}$</td>
+        <td>$b_{3}$</td>
+        <td>8</td>
+        <td>3</td>
+        <td>$b_{3}$</td>
+        <td>10</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>$a_{2}$</td>
+        <td>$b_{3}$</td>
+        <td>8</td>
+        <td>4</td>
+        <td>$b_{3}$</td>
+        <td>2</td>
+    </tr>
+</table>
+
+
+<p>筛选出$R.B=S.B$后的结果,即$R\Join S$的结果,这里$R$和$S$相同的属性是$B$,所以这里自然连接的结果和$R \mathop{\mathbb{\Join}}\limits_{R.B=S.B} S$的结果相同,但是需要去掉重复列:</p>
+<table>
+    <caption><strong align="center">$R\Join S$</strong></caption>
+    <tr>
+        <th>R.NO.</th>
+        <th>R.A</th>
+        <th>R.B</th>
+        <th>R.C</th>
+        <th>S.NO.</th>
+        <th>S.E</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>$a_{1}$</td>
+        <td>$b_{1}$</td>
+        <td>5</td>
+        <td>1</td>
+        <td>3</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>$a_{1}$</td>
+        <td>$b_{2}$</td>
+        <td>6</td>
+        <td>2</td>
+        <td>7</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>$a_{2}$</td>
+        <td>$b_{3}$</td>
+        <td>8</td>
+        <td>3</td>
+        <td>10</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>$a_{2}$</td>
+        <td>$b_{3}$</td>
+        <td>8</td>
+        <td>4</td>
+        <td>2</td>
+    </tr>
+</table>
+
 <h3 id="Ⅲ-除-Division"><a href="#Ⅲ-除-Division" class="headerlink" title="Ⅲ 除(Division)"></a>Ⅲ 除(Division)</h3><p>除运算是同时从关系的水平方向和垂直方向进行运算.给定关系$R(X,Y)$和$S(Y,Z)$,$X$,$Y$,$Z$为属性组.$R\div S$应当满足元组在$X$上的分量值$x$的象集$Y_{x}$包含关系$S$在属性组$Y$上投影的集合.其形式定义如下:</p>
 <script type="math/tex; mode=display">
 R\div S=\{t^{n}[X]|t^{n}\in R\land \pi_{y}(S) \subseteq Y_{x}   \}</script><p>其中,$Y_{x}$为$x$在$R$中的象集,$x=t^{n}[X]$,且$R\div S$的结果集的属性组为$X$.</p>
+<blockquote>
+<p>《数据库系统概论》 第五版:<br>设关系$R$除以关系$S$的结果为关系$T$,则$T$包含所有在$R$但不在$S$中的属性及其值,且$T$的元组与$S$的元组的所有组合都在$R$中.<br>下面用<strong>象集</strong>来定义除法:<br>给定关系R(X,Y)和S(Y,Z),其中X,Y,Z为属性组.R中的Y与S中的Y可以有不同的属性名,但必须出自相同的域集.</p>
+</blockquote>
 <h3 id="Ⅳ-广义投影-Generalized-Projection"><a href="#Ⅳ-广义投影-Generalized-Projection" class="headerlink" title="Ⅳ 广义投影(Generalized Projection)"></a>Ⅳ 广义投影(Generalized Projection)</h3><p>广义投影允许在投影列表中使用算术运算,实现了对投影运算的扩充.<br>若有关系$R$,条件$F_{1},F_{1},\cdots,F_{n}$中的每一个都是涉及$R$中常量和属性的算术表达式,那么广义投影运算的定义为:</p>
 <script type="math/tex; mode=display">
-\pi_{F_{1},F_{2},\cdots,F_{n}}(R)</script><h3 id="Ⅴ-外连接-Outer-Join"><a href="#Ⅴ-外连接-Outer-Join" class="headerlink" title="Ⅴ 外连接(Outer Join)"></a>Ⅴ 外连接(Outer Join)</h3><p>外连接运算是连接运算的扩展,可以处理由于连接运算而缺失的的信息</p>
+\pi_{F_{1},F_{2},\cdots,F_{n}}(R)</script><h4 id="示例-2"><a href="#示例-2" class="headerlink" title="示例"></a>示例</h4><p>假设关系$R(user_name,limit,balance)$,属性分别代表用户名,总金额,当前已经花费的金额.若要查询每个用户还能花费的金额,就可以使用广义投影来求取结果:</p>
+<table>
+    <caption><strong align="center">$R$</strong></caption>
+    <tr>
+        <th>user_name</th>
+        <th>limit</th>
+        <th>balance</th>
+    </tr>
+    <tr>
+        <td>小明</td>
+        <td>3000</td>
+        <td>1700</td>
+    </tr>
+    <tr>
+        <td>小丽</td>
+        <td>3000</td>
+        <td>1500</td>
+    </tr>
+    <tr>
+        <td>小赵</td>
+        <td>5000</td>
+        <td>900</td>
+    </tr>
+    <tr>
+        <td>小吴</td>
+        <td>4000</td>
+        <td>1900</td>
+    </tr>
+</table>
+
+<p>获取每个用户还能花费的金额,则表达式为<script type="math/tex">\pi_{user\_name,limit-balance}(R)</script>,结果如下:</p>
+<table>
+    <caption><strong align="center">$\pi_{user\_name,limit-balance}(R)$</strong></caption>
+    <tr>
+        <th>user_name</th>
+        <th>limit-balance</th>
+    </tr>
+    <tr>
+        <td>小明</td>
+        <td>1300</td>
+    </tr>
+    <tr>
+        <td>小丽</td>
+        <td>1500</td>
+    </tr>
+    <tr>
+        <td>小赵</td>
+        <td>4100</td>
+    </tr>
+    <tr>
+        <td>小吴</td>
+        <td>2100</td>
+    </tr>
+</table>
+
+
+
+
+
+<h3 id="Ⅴ-外连接-Outer-Join"><a href="#Ⅴ-外连接-Outer-Join" class="headerlink" title="Ⅴ 外连接(Outer Join)"></a>Ⅴ 外连接(Outer Join)</h3><p>外连接运算是连接运算的扩展,可以处理由于连接运算而缺失的的信息</p>
 <h4 id="左外连接-Left-Outer-Join-R-sqsupset-Join-S"><a href="#左外连接-Left-Outer-Join-R-sqsupset-Join-S" class="headerlink" title="左外连接(Left Outer Join) R \sqsupset \! \Join S"></a>左外连接(Left Outer Join) <script type="math/tex">R \sqsupset \! \Join S</script></h4><p>取出左侧关系中所有与右侧关系中任一元组都不匹配的元组,用空值<code>null</code>填充所有来自右侧关系的属性,构成新的元组,将其加入自然连接的结果中.</p>
 <h4 id="右外连接-Right-Outer-Join-R-Join-sqsubset-S"><a href="#右外连接-Right-Outer-Join-R-Join-sqsubset-S" class="headerlink" title="右外连接(Right Outer Join) R \Join \! \sqsubset S"></a>右外连接(Right Outer Join) <script type="math/tex">R \Join \! \sqsubset S</script></h4><p>取出右侧关系中所有与左侧关系中任一元组都不匹配的元组,用空值<code>null</code>填充所有来自左侧关系的属性,构成新的元组,将其加入自然连接的结果中.</p>
 <h4 id="全外连接-Full-Outer-Join-R-sqsupset-Join-sqsubset-S"><a href="#全外连接-Full-Outer-Join-R-sqsupset-Join-sqsubset-S" class="headerlink" title="全外连接(Full Outer Join) R \sqsupset \! \Join \! \sqsubset S"></a>全外连接(Full Outer Join) <script type="math/tex">R \sqsupset \! \Join \! \sqsubset S</script></h4><p>完成左外连接和右外连接的操作,即填充左侧关系中所有与右侧关系中任一元组都不匹配的元组,并填充右侧关系中所有与左侧关系中任一元组都不匹配的元组,将产生的新的元组加入自然连接的结果中.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"> select Sno,Sname from S natural join (select Sno from SC where Cno=2) a</span><br><span class="line"></span><br><span class="line"> select S.Sno,Sname from S JOIN SC on S.Sno=SC.Sno where SC.Cno=2  </span><br><span class="line"></span><br><span class="line">select Sno from SC where Cno=1 or Cno=3</span><br></pre></td></tr></table></figure>
+<script type="math/tex; mode=display">
+
+\Pi_{Sno,Sname}(S \Join \pi_{Sno}(\sigma_{Cno=2}(SC)))
+
+
+\\ \Pi_{S.Sno,Sname}(\sigma_{Cno=2}(S \mathop{\mathbb{\Join}}\limits_{S.Sno=SC.Sno} SC)) 
+
+\\  \pi_{Sno}(\sigma_{Cno=1 \lor Cno=3}(SC))</script><style>
+.RJiaoS_1{
+background:DarkGoldenRod;
+color:white
+}
+.RJiaoS_2{
+background:CadetBlue;
+color:white
+}
+.traditionSetOper{
+color:DarkViolet
+}
+
+</style>
 
       
     </div>
@@ -1094,9 +1713,9 @@ R\div S=\{t^{n}[X]|t^{n}\in R\land \pi_{y}(S) \subseteq Y_{x}   \}</script><p>�
       
         <div class="post-tags">
           
-            <a href="/tags/DataBase/" rel="tag"># DataBase</a>
-          
             <a href="/tags/Math/" rel="tag"># Math</a>
+          
+            <a href="/tags/DataBase/" rel="tag"># DataBase</a>
           
         </div>
       
@@ -1118,6 +1737,10 @@ R\div S=\{t^{n}[X]|t^{n}\in R\land \pi_{y}(S) \subseteq Y_{x}   \}</script><p>�
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/09/30/Technology/Accumulate/" rel="prev" title="日常积累-小知识点">
+                日常积累-小知识点 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -1196,7 +1819,7 @@ R\div S=\{t^{n}[X]|t^{n}\in R\land \pi_{y}(S) \subseteq Y_{x}   \}</script><p>�
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1207,7 +1830,7 @@ R\div S=\{t^{n}[X]|t^{n}\in R\land \pi_{y}(S) \subseteq Y_{x}   \}</script><p>�
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1218,7 +1841,7 @@ R\div S=\{t^{n}[X]|t^{n}\in R\land \pi_{y}(S) \subseteq Y_{x}   \}</script><p>�
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -1292,7 +1915,7 @@ R\div S=\{t^{n}[X]|t^{n}\in R\land \pi_{y}(S) \subseteq Y_{x}   \}</script><p>�
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#关系代数运算符"><span class="nav-number">1.</span> <span class="nav-text">关系代数运算符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五种基本的关系代数运算"><span class="nav-number">2.</span> <span class="nav-text">五种基本的关系代数运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Ⅰ-并-Union"><span class="nav-number">2.1.</span> <span class="nav-text">Ⅰ 并(Union)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ⅱ-差-Difference"><span class="nav-number">2.2.</span> <span class="nav-text">Ⅱ 差(Difference)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ⅲ-广义笛卡尔积-Extended-Cartesian-Product"><span class="nav-number">2.3.</span> <span class="nav-text">Ⅲ 广义笛卡尔积(Extended Cartesian Product)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ⅳ-投影-Projection"><span class="nav-number">2.4.</span> <span class="nav-text">Ⅳ 投影(Projection)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ⅴ-选择-Selection"><span class="nav-number">2.5.</span> <span class="nav-text">Ⅴ 选择(Selection)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ⅵ-具体示例"><span class="nav-number">2.6.</span> <span class="nav-text">Ⅵ 具体示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#R-cup-S"><span class="nav-number">2.6.1.</span> <span class="nav-text">$R\cup S$</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#R-S"><span class="nav-number">2.6.2.</span> <span class="nav-text">$R-S$</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#R-times-S"><span class="nav-number">2.6.3.</span> <span class="nav-text">$R\times S$</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pi-A-C-R"><span class="nav-number">2.6.4.</span> <span class="nav-text">$\pi_{A,C}(R)$</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sigma-A-gt-B-R"><span class="nav-number">2.6.5.</span> <span class="nav-text">$\sigma_{A\gt B}(R)$</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sigma-3-lt-4-R-times-S"><span class="nav-number">2.6.6.</span> <span class="nav-text">$\sigma_{3\lt 4}(R\times S)$</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展的关系代数运算"><span class="nav-number">3.</span> <span class="nav-text">扩展的关系代数运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Ⅰ-交-Intersection"><span class="nav-number">3.1.</span> <span class="nav-text">Ⅰ 交(Intersection)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ⅱ-连接-Join"><span class="nav-number">3.2.</span> <span class="nav-text">Ⅱ 连接(Join)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#theta-连接"><span class="nav-number">3.2.1.</span> <span class="nav-text">$\theta$连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#等值连接"><span class="nav-number">3.2.2.</span> <span class="nav-text">等值连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自然连接"><span class="nav-number">3.2.3.</span> <span class="nav-text">自然连接</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ⅲ-除-Division"><span class="nav-number">3.3.</span> <span class="nav-text">Ⅲ 除(Division)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ⅳ-广义投影-Generalized-Projection"><span class="nav-number">3.4.</span> <span class="nav-text">Ⅳ 广义投影(Generalized Projection)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ⅴ-外连接-Outer-Join"><span class="nav-number">3.5.</span> <span class="nav-text">Ⅴ 外连接(Outer Join)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#左外连接-Left-Outer-Join-R-sqsupset-Join-S"><span class="nav-number">3.5.1.</span> <span class="nav-text">左外连接(Left Outer Join) R \sqsupset \! \Join S</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#右外连接-Right-Outer-Join-R-Join-sqsubset-S"><span class="nav-number">3.5.2.</span> <span class="nav-text">右外连接(Right Outer Join) R \Join \! \sqsubset S</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#全外连接-Full-Outer-Join-R-sqsupset-Join-sqsubset-S"><span class="nav-number">3.5.3.</span> <span class="nav-text">全外连接(Full Outer Join) R \sqsupset \! \Join \! \sqsubset S</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#关系代数运算符"><span class="nav-number">1.</span> <span class="nav-text">关系代数运算符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五种基本的关系代数运算"><span class="nav-number">2.</span> <span class="nav-text">五种基本的关系代数运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Ⅰ-并-Union"><span class="nav-number">2.1.</span> <span class="nav-text">Ⅰ 并(Union)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ⅱ-差-Difference"><span class="nav-number">2.2.</span> <span class="nav-text">Ⅱ 差(Difference)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ⅲ-广义笛卡尔积-Extended-Cartesian-Product"><span class="nav-number">2.3.</span> <span class="nav-text">Ⅲ 广义笛卡尔积(Extended Cartesian Product)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ⅳ-投影-Projection"><span class="nav-number">2.4.</span> <span class="nav-text">Ⅳ 投影(Projection)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ⅴ-选择-Selection"><span class="nav-number">2.5.</span> <span class="nav-text">Ⅴ 选择(Selection)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ⅵ-具体示例"><span class="nav-number">2.6.</span> <span class="nav-text">Ⅵ 具体示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#R-cup-S"><span class="nav-number">2.6.1.</span> <span class="nav-text">$R\cup S$</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#R-S"><span class="nav-number">2.6.2.</span> <span class="nav-text">$R-S$</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#R-times-S"><span class="nav-number">2.6.3.</span> <span class="nav-text">$R\times S$</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pi-A-C-R"><span class="nav-number">2.6.4.</span> <span class="nav-text">$\pi_{A,C}(R)$</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sigma-A-gt-B-R"><span class="nav-number">2.6.5.</span> <span class="nav-text">$\sigma_{A\gt B}(R)$</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sigma-3-lt-4-R-times-S"><span class="nav-number">2.6.6.</span> <span class="nav-text">$\sigma_{3\lt 4}(R\times S)$</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展的关系代数运算"><span class="nav-number">3.</span> <span class="nav-text">扩展的关系代数运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Ⅰ-交-Intersection"><span class="nav-number">3.1.</span> <span class="nav-text">Ⅰ 交(Intersection)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#示例"><span class="nav-number">3.1.1.</span> <span class="nav-text">示例</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ⅱ-连接-Join"><span class="nav-number">3.2.</span> <span class="nav-text">Ⅱ 连接(Join)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#theta-连接"><span class="nav-number">3.2.1.</span> <span class="nav-text">$\theta$连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#等值连接"><span class="nav-number">3.2.2.</span> <span class="nav-text">等值连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自然连接"><span class="nav-number">3.2.3.</span> <span class="nav-text">自然连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#示例-1"><span class="nav-number">3.2.4.</span> <span class="nav-text">示例</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ⅲ-除-Division"><span class="nav-number">3.3.</span> <span class="nav-text">Ⅲ 除(Division)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ⅳ-广义投影-Generalized-Projection"><span class="nav-number">3.4.</span> <span class="nav-text">Ⅳ 广义投影(Generalized Projection)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#示例-2"><span class="nav-number">3.4.1.</span> <span class="nav-text">示例</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ⅴ-外连接-Outer-Join"><span class="nav-number">3.5.</span> <span class="nav-text">Ⅴ 外连接(Outer Join)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#左外连接-Left-Outer-Join-R-sqsupset-Join-S"><span class="nav-number">3.5.1.</span> <span class="nav-text">左外连接(Left Outer Join) R \sqsupset \! \Join S</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#右外连接-Right-Outer-Join-R-Join-sqsubset-S"><span class="nav-number">3.5.2.</span> <span class="nav-text">右外连接(Right Outer Join) R \Join \! \sqsubset S</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#全外连接-Full-Outer-Join-R-sqsupset-Join-sqsubset-S"><span class="nav-number">3.5.3.</span> <span class="nav-text">全外连接(Full Outer Join) R \sqsupset \! \Join \! \sqsubset S</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
@@ -1312,7 +1935,7 @@ R\div S=\{t^{n}[X]|t^{n}\in R\land \pi_{y}(S) \subseteq Y_{x}   \}</script><p>�
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; 2019 &mdash; <span itemprop="copyrightYear">2020</span>
+        <div class="copyright">&copy; 2019 &mdash; <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
